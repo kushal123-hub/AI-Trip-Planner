@@ -1,7 +1,10 @@
+from typing import Any
+
 from pydantic import BaseModel
 
 
 class AIRequest(BaseModel):
+    trip_id: int
     destination: str
     start_date: str
     end_date: str
@@ -11,4 +14,4 @@ class AIRequest(BaseModel):
 
 
 class AIResponse(BaseModel):
-    itinerary: str
+    itinerary: dict[str, Any]

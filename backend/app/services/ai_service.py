@@ -1,4 +1,7 @@
+import json
+
 from google import genai
+from google.genai import types
 from fastapi import HTTPException
 
 from app.core.config import settings
@@ -9,12 +12,13 @@ client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 def generate_itinerary(data):
     prompt = f"""
-You are an expert travel planner.
+You are an expert AI travel planner.
 
-Create a detailed 5-star travel itinerary.
+Create a premium travel itinerary.
 
-Destination:
-{data.destination}
+Trip Details
+
+Destination: {data.destination}
 
 Travel Dates:
 {data.start_date} to {data.end_date}
@@ -28,29 +32,61 @@ Interests:
 Travel Style:
 {data.travel_style}
 
-Generate the following sections:
+IMPORTANT:
 
-1. Trip Overview
+Return ONLY valid JSON.
 
-2. Day-wise Itinerary
+Do NOT write any explanation.
 
-3. Best Hotels
+Do NOT use markdown.
 
-4. Best Restaurants
+Do NOT wrap the response inside ```json.
 
-5. Estimated Budget Breakdown
+Return exactly this JSON structure:
 
-6. Packing List
+{{
+  "trip_overview": "",
+  "days": [
+    {{
+      "day": 1,
+      "title": "",
+      "activities": [
+        "",
+        ""
+      ]
+    }}
+  ],
+  "recommended_hotels": [
+    ""
+  ],
+  "recommended_restaurants": [
+    ""
+  ],
+  "budget_breakdown": {{
+    "hotel": 0,
+    "food": 0,
+    "transport": 0,
+    "activities": 0,
+    "miscellaneous": 0
+  }},
+  "packing_list": [
+    ""
+  ],
+  "travel_tips": [
+    ""
+  ]
+}}
 
-7. Travel Tips
-
-Return the response in plain text.
+The JSON must be valid and directly parsable.
 """
 
     try:
         response = client.models.generate_content(
-            model="models/gemini-flash-latest",
+            model="gemini-3.6-flash",
             contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+            ),
         )
 
         if not response.text:
@@ -59,7 +95,15 @@ Return the response in plain text.
                 detail="Gemini returned an empty response."
             )
 
-        return response.text
+        # Parse the JSON returned by Gemini
+        try:
+            itinerary_json = json.loads(response.text)
+            return itinerary_json
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini returned invalid JSON."
+            )
 
     except Exception as e:
         print("\n========== GEMINI ERROR ==========")

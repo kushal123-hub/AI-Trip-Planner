@@ -1,3 +1,4 @@
+import json
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -94,3 +95,32 @@ def delete_trip(
     return {
         "message": "Trip deleted successfully"
     }
+
+def save_ai_itinerary(
+    trip_id: int,
+    itinerary: str,
+    user_id: int,
+    db: Session,
+):
+    trip = db.query(Trip).filter(
+        Trip.id == trip_id
+    ).first()
+
+    if trip is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Trip not found",
+        )
+
+    if trip.user_id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied",
+        )
+
+    trip.ai_itinerary = json.dumps(itinerary, indent=4)
+
+    db.commit()
+    db.refresh(trip)
+
+    return trip
