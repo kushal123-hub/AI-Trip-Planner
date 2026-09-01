@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
   Compass, 
@@ -17,8 +17,9 @@ import {
   Utensils,
   Crown,
   Users,
-  Compass as AdventureIcon,
-  PiggyBank
+  PiggyBank,
+  Clock,
+  Plus
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import API from "../api/api";
@@ -26,14 +27,14 @@ import { useAuth } from "../context/AuthContext";
 import AIGenerationLoader from "./AIGenerationLoader";
 
 const travelStyleOptions = [
-  { label: "Cultural & Heritage", value: "Cultural", icon: Compass, desc: "Temples, museums, local folklore" },
-  { label: "Adventure & Thrill", value: "Adventure", icon: Mountain, desc: "Treks, hikes, outdoor excursions" },
-  { label: "Relaxation & Spa", value: "Relaxing", icon: Palmtree, desc: "Beaches, resorts, wellness" },
-  { label: "Romantic Getaway", value: "Romantic", icon: Heart, desc: "Intimate dining, scenic views" },
-  { label: "Gastronomic & Foodie", value: "Foodie", icon: Utensils, desc: "Street food, fine dining, wine" },
-  { label: "Luxury & Exclusive", value: "Luxury", icon: Crown, desc: "5-star stays, private tours" },
-  { label: "Family Friendly", value: "Family", icon: Users, desc: "Fun for all ages, parks, safety" },
-  { label: "Budget & Backpacking", value: "Budget", icon: PiggyBank, desc: "Hostels, smart transit, value" },
+  { label: "Cultural & Heritage", value: "Cultural", icon: Compass, desc: "Temples, museums, traditions", gradient: "from-purple-500/20 to-indigo-500/20", border: "border-purple-500/30" },
+  { label: "Adventure & Thrill", value: "Adventure", icon: Mountain, desc: "Treks, trails, outdoor thrill", gradient: "from-cyan-500/20 to-blue-500/20", border: "border-cyan-500/30" },
+  { label: "Relaxation & Spa", value: "Relaxing", icon: Palmtree, desc: "Beaches, resorts & wellness", gradient: "from-emerald-500/20 to-teal-500/20", border: "border-emerald-500/30" },
+  { label: "Romantic Escape", value: "Romantic", icon: Heart, desc: "Intimate views & fine wine", gradient: "from-pink-500/20 to-rose-500/20", border: "border-pink-500/30" },
+  { label: "Gastronomic Foodie", value: "Foodie", icon: Utensils, desc: "Street stalls, Michelin stars", gradient: "from-amber-500/20 to-orange-500/20", border: "border-amber-500/30" },
+  { label: "Luxury & VIP", value: "Luxury", icon: Crown, desc: "5-star retreats & chauffeur", gradient: "from-yellow-500/20 to-amber-500/20", border: "border-yellow-500/30" },
+  { label: "Family Friendly", value: "Family", icon: Users, desc: "Safe, engaging & paced", gradient: "from-blue-500/20 to-indigo-500/20", border: "border-blue-500/30" },
+  { label: "Smart Budget", value: "Budget", icon: PiggyBank, desc: "Hostels & authentic value", gradient: "from-teal-500/20 to-emerald-500/20", border: "border-teal-500/30" },
 ];
 
 const popularInterests = [
@@ -43,10 +44,10 @@ const popularInterests = [
 ];
 
 const budgetPresets = [
-  { label: "₹25,000", value: 25000 },
-  { label: "₹50,000", value: 50000 },
-  { label: "₹1,00,000", value: 100000 },
-  { label: "₹2,00,000", value: 200000 },
+  { label: "₹30,000", value: 30000, tag: "Smart Budget" },
+  { label: "₹65,000", value: 65000, tag: "Popular Pick" },
+  { label: "₹1,25,000", value: 125000, tag: "Premium" },
+  { label: "₹2,50,000+", value: 250000, tag: "Luxury Tier" },
 ];
 
 const popularDestinations = ["Kyoto, Japan", "Amalfi Coast, Italy", "Bali, Indonesia", "Swiss Alps", "Goa, India", "Paris, France"];
@@ -58,7 +59,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [budget, setBudget] = useState("50000");
+  const [budget, setBudget] = useState("65000");
   const [travelStyle, setTravelStyle] = useState("Cultural");
   const [selectedInterests, setSelectedInterests] = useState(["Local Street Food", "Scenic Photography"]);
   const [customInterest, setCustomInterest] = useState("");
@@ -95,6 +96,14 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
       setCurrentStep(1);
     }
   }, [preloadedData]);
+
+  // Calculate days duration
+  const tripDurationDays = useMemo(() => {
+    if (!startDate || !endDate) return 0;
+    const diff = new Date(endDate) - new Date(startDate);
+    const days = Math.round(diff / (1000 * 60 * 60 * 24)) + 1;
+    return days > 0 ? days : 0;
+  }, [startDate, endDate]);
 
   const toggleInterest = (interest) => {
     if (selectedInterests.includes(interest)) {
@@ -184,10 +193,10 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
       // Celebration confetti!
       try {
         confetti({
-          particleCount: 80,
-          spread: 70,
+          particleCount: 90,
+          spread: 80,
           origin: { y: 0.6 },
-          colors: ["#8b5cf6", "#06b6d4", "#f59e0b", "#10b981"],
+          colors: ["#8b5cf6", "#06b6d4", "#f59e0b", "#10b981", "#ec4899"],
         });
       } catch (e) {
         // ignore
@@ -214,7 +223,6 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
     if (!validateStep1() || !validateStep2()) return;
 
     if (!isAuthenticated) {
-      // Prompt modal without losing inputs
       openAuthModal("register", () => {
         executeGeneration();
       });
@@ -235,34 +243,34 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
   return (
     <section id="planner" className="py-24 relative overflow-hidden">
       {/* Background Orbs */}
-      <div className="pointer-events-none absolute top-10 right-10 w-96 h-96 bg-violet-600/15 rounded-full blur-[120px] -z-10" />
-      <div className="pointer-events-none absolute bottom-10 left-10 w-96 h-96 bg-cyan-500/15 rounded-full blur-[120px] -z-10" />
+      <div className="pointer-events-none absolute top-10 right-10 w-[500px] h-[500px] bg-violet-600/15 rounded-full blur-[140px] -z-10 animate-pulse-glow" />
+      <div className="pointer-events-none absolute bottom-10 left-10 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[140px] -z-10 animate-float-slow" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Title */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-3">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-3 shadow-sm shadow-violet-500/20">
             <Sparkles className="h-3.5 w-3.5 text-violet-400" />
             <span>Interactive AI Generator</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Custom Itinerary</span>
+            Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-400">Custom Itinerary</span>
           </h2>
           <p className="mt-2 text-sm sm:text-base text-slate-400">
             Tell us your destination, dates, and budget. Our Gemini engine builds a complete trip in seconds.
           </p>
         </div>
 
-        {/* Wizard Container */}
-        <div className="rounded-3xl border border-white/15 bg-slate-900/80 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative">
+        {/* Wizard Card Container */}
+        <div className="rounded-3xl border border-white/15 bg-slate-900/85 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative">
           
           {/* Step Indicator Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between relative">
               <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-800 -translate-y-1/2 -z-10" />
               <div 
-                className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-violet-600 to-cyan-400 -translate-y-1/2 -z-10 transition-all duration-300"
+                className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400 -translate-y-1/2 -z-10 transition-all duration-300 shadow-sm shadow-violet-500"
                 style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
               />
 
@@ -277,14 +285,15 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                 return (
                   <div key={s.num} className="flex flex-col items-center gap-1.5 bg-slate-900 px-2 sm:px-4">
                     <button
+                      type="button"
                       onClick={() => {
                         if (s.num < currentStep) setCurrentStep(s.num);
                       }}
-                      className={`flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-bold transition-all duration-200 ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                         isCompleted
                           ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
                           : isCurrent
-                          ? "bg-gradient-to-tr from-violet-600 to-cyan-500 text-white shadow-lg shadow-violet-500/30 scale-110"
+                          ? "bg-gradient-to-tr from-violet-600 to-cyan-500 text-white shadow-lg shadow-violet-500/40 scale-110 ring-2 ring-violet-400/50"
                           : "border border-white/10 bg-slate-800 text-slate-400"
                       }`}
                     >
@@ -331,7 +340,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                     placeholder="e.g. Kyoto, Japan or Amalfi Coast, Italy"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800 focus:ring-2 focus:ring-violet-500/20"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800 focus:ring-2 focus:ring-violet-500/25"
                   />
                 </div>
 
@@ -343,7 +352,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       key={city}
                       type="button"
                       onClick={() => setDestination(city)}
-                      className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 transition"
+                      className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 transition cursor-pointer"
                     >
                       {city}
                     </button>
@@ -364,7 +373,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       required
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
                     />
                   </div>
                 </div>
@@ -380,11 +389,24 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       required
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
                     />
                   </div>
                 </div>
               </div>
+
+              {/* Duration Live Calculation Pill */}
+              {tripDurationDays > 0 && (
+                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-3 flex items-center justify-between text-xs text-cyan-300">
+                  <span className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-cyan-400" />
+                    <span>Calculated Length:</span>
+                  </span>
+                  <span className="font-bold text-white bg-cyan-500/20 px-2.5 py-0.5 rounded-lg border border-cyan-500/30">
+                    {tripDurationDays} Days / {Math.max(tripDurationDays - 1, 1)} Nights
+                  </span>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -402,7 +424,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
                     Total Trip Budget (INR)
                   </label>
-                  <span className="text-xs font-bold text-emerald-400">
+                  <span className="text-sm font-extrabold text-emerald-400">
                     ₹{parseFloat(budget || 0).toLocaleString("en-IN")}
                   </span>
                 </div>
@@ -414,10 +436,10 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                     min="1000"
                     step="1000"
                     required
-                    placeholder="50000"
+                    placeholder="65000"
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
                   />
                 </div>
 
@@ -428,13 +450,14 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       key={preset.value}
                       type="button"
                       onClick={() => setBudget(preset.value.toString())}
-                      className={`py-2 px-3 rounded-xl text-xs font-semibold transition border ${
+                      className={`py-2 px-3 rounded-xl text-xs font-semibold transition border cursor-pointer ${
                         budget === preset.value.toString()
-                          ? "bg-emerald-500/20 border-emerald-500 text-emerald-300"
+                          ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/20"
                           : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10"
                       }`}
                     >
-                      {preset.label}
+                      <span className="block font-bold">{preset.label}</span>
+                      <span className="text-[10px] text-slate-400 font-normal">{preset.tag}</span>
                     </button>
                   ))}
                 </div>
@@ -449,25 +472,27 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                   {travelStyleOptions.map((style) => {
                     const StyleIcon = style.icon;
                     const isSelected = travelStyle === style.value;
+
                     return (
                       <button
                         key={style.value}
                         type="button"
                         onClick={() => setTravelStyle(style.value)}
-                        className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-200 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                           isSelected
-                            ? "bg-gradient-to-b from-violet-600/30 to-purple-600/20 border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.02]"
-                            : "bg-slate-800/40 border-white/5 hover:border-white/15 hover:bg-slate-800/70"
+                            ? `bg-gradient-to-br ${style.gradient} border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.03]`
+                            : "border-white/10 bg-slate-800/40 hover:bg-slate-800/80 hover:border-white/20"
                         }`}
                       >
-                        <div className={`h-8 w-8 rounded-xl flex items-center justify-center mb-2 ${
-                          isSelected ? "bg-violet-600 text-white" : "bg-white/10 text-slate-300"
-                        }`}>
-                          <StyleIcon className="h-4 w-4" />
+                        <div className="flex items-center justify-between mb-2">
+                          <div className={`p-2 rounded-xl ${isSelected ? "bg-violet-600 text-white" : "bg-white/5 text-slate-400"}`}>
+                            <StyleIcon className="h-4 w-4" />
+                          </div>
+                          {isSelected && <Check className="h-4 w-4 text-violet-400" />}
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-white">{style.value}</p>
-                          <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{style.desc}</p>
+                          <p className="text-xs font-bold text-white">{style.label}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{style.desc}</p>
                         </div>
                       </button>
                     );
@@ -486,14 +511,9 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
               className="space-y-6"
             >
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                  What activities excite you most? (Select multiple)
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-3">
+                  What activities excite you most? ({selectedInterests.length} selected)
                 </label>
-                <p className="text-xs text-slate-400 mb-4">
-                  Our AI uses your chosen interests to tailor daytime excursions, dining recommendations, and hidden neighborhood gems.
-                </p>
-
-                {/* Popular Interest Pills */}
                 <div className="flex flex-wrap gap-2">
                   {popularInterests.map((interest) => {
                     const isSelected = selectedInterests.includes(interest);
@@ -502,13 +522,13 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                         key={interest}
                         type="button"
                         onClick={() => toggleInterest(interest)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 border flex items-center gap-1.5 ${
+                        className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/25"
-                            : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white"
+                            ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/30 scale-105 border border-violet-400/40"
+                            : "bg-white/5 border border-white/5 text-slate-300 hover:bg-white/10 hover:border-white/15"
                         }`}
                       >
-                        {isSelected && <Check className="h-3 w-3" />}
+                        {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3 text-slate-500" />}
                         <span>{interest}</span>
                       </button>
                     );
@@ -516,92 +536,92 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                 </div>
               </div>
 
-              {/* Add Custom Interest */}
+              {/* Custom interest adder */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">
-                  Add specific places or niche hobbies:
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                  Add custom preference / dietary requirements:
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="e.g. Scuba diving, Anime shops, Matcha tasting..."
+                    placeholder="e.g. Vegetarian ramen, rooftop bars, kid-friendly..."
                     value={customInterest}
                     onChange={(e) => setCustomInterest(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addCustomInterest(e);
-                      }
+                      if (e.key === "Enter") addCustomInterest(e);
                     }}
-                    className="flex-1 rounded-2xl border border-white/10 bg-slate-800/60 px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                    className="flex-1 rounded-2xl border border-white/10 bg-slate-800/70 py-3 px-4 text-xs text-white placeholder-slate-500 outline-none focus:border-violet-500"
                   />
                   <button
                     type="button"
                     onClick={addCustomInterest}
-                    className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition"
+                    className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition cursor-pointer"
                   >
                     Add
                   </button>
                 </div>
               </div>
 
-              {/* Summary Overview Card */}
-              <div className="p-4 rounded-2xl border border-white/10 bg-slate-950/60 space-y-2 text-xs">
+              {/* Review Snapshot */}
+              <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 text-xs text-slate-300 space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Destination:</span>
-                  <span className="font-semibold text-white">{destination}</span>
+                  <span className="font-bold text-white">{destination || "Not set"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Dates:</span>
-                  <span className="font-semibold text-white">{startDate} to {endDate}</span>
+                  <span className="text-slate-200">{startDate} to {endDate} ({tripDurationDays} Days)</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Budget:</span>
-                  <span className="font-semibold text-emerald-400">₹{parseFloat(budget || 0).toLocaleString("en-IN")}</span>
+                  <span className="font-bold text-emerald-400">₹{parseFloat(budget || 0).toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Style:</span>
-                  <span className="font-semibold text-violet-400">{travelStyle}</span>
+                  <span className="text-violet-300 font-semibold">{travelStyle}</span>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Navigation & Action Footer */}
+          {/* Navigation Controls */}
           <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between gap-4">
             {currentStep > 1 ? (
               <button
                 type="button"
                 onClick={handlePrevStep}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 hover:text-white transition"
+                className="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer"
               >
-                <ArrowLeft className="h-3.5 w-3.5" />
+                <ArrowLeft className="h-4 w-4" />
                 <span>Back</span>
               </button>
-            ) : <div />}
+            ) : (
+              <div />
+            )}
 
             {currentStep < 3 ? (
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-xs font-semibold text-white shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:scale-[1.02] transition"
+                className="px-6 py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs transition flex items-center gap-2 shadow-lg shadow-violet-600/30 cursor-pointer"
               >
                 <span>Continue</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <ArrowRight className="h-4 w-4" />
               </button>
             ) : (
               <button
                 type="button"
                 onClick={handleGenerate}
-                className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 text-sm font-bold text-white shadow-xl shadow-violet-600/40 hover:shadow-violet-600/60 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
+                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 text-white font-bold text-sm shadow-xl shadow-violet-600/40 hover:shadow-violet-600/60 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer animate-shimmer"
               >
-                <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
-                <span>Generate AI Itinerary</span>
+                <Sparkles className="h-4 w-4" />
+                <span>Generate Itinerary with AI</span>
               </button>
             )}
           </div>
 
         </div>
+
       </div>
     </section>
   );

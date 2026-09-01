@@ -167,12 +167,13 @@
   }
 }
 
-.animate-float-slow {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float 7s ease-in-out 2s infinite;
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.02);
+  }
 }
 
 @keyframes pulse-glow {
@@ -182,12 +183,26 @@
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes shimmer {
@@ -199,10 +214,58 @@
   }
 }
 
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 25s linear infinite;
+}
+
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite;
+}
+
+.animate-gradient-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #f472b6 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-x 4s ease infinite;
+}
+
+/* Neon Glow utilities */
+.glow-violet {
+  box-shadow: 0 0 35px -5px rgba(139, 92, 246, 0.35);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.35);
 }
 
 /* Custom Leaflet Dark UI */
@@ -231,4 +294,3 @@
   background: #090d16 !important;
   font-family: inherit !important;
 }
-

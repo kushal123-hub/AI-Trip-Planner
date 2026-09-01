@@ -21,6 +21,7 @@ const Navbar = () => {
   const { user, isAuthenticated, logout, openAuthModal } = useAuth();
   
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
@@ -28,6 +29,10 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        setScrollProgress((window.scrollY / totalScroll) * 100);
+      }
       if (window.scrollY > 20) {
         setScrolled(true);
       } else {
@@ -38,6 +43,7 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -66,10 +72,16 @@ const Navbar = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-slate-950/80 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/40 py-3.5"
+          ? "bg-slate-950/85 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-black/50 py-3.5"
           : "bg-transparent py-5"
       }`}
     >
+      {/* Top Scroll Progress Indicator */}
+      <div 
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400 z-50 transition-all duration-100"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link
