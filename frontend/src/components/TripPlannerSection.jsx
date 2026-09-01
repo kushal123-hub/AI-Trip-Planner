@@ -258,8 +258,9 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
             Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-400">Custom Itinerary</span>
           </h2>
           <p className="mt-2 text-sm sm:text-base text-slate-400">
-            Tell us your destination, dates, and budget. Our Gemini engine builds a complete trip in seconds.
+            Tell us your destination, dates, and budget. Our intelligent travel engine builds a complete trip in seconds.
           </p>
+
         </div>
 
         {/* Wizard Card Container */}

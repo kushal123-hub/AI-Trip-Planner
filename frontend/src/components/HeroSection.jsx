@@ -59,8 +59,9 @@ const HeroSection = ({ onStartPlanning, onExploreDestinations }) => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-6 shadow-lg shadow-violet-500/20">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
               <Sparkles className="h-3.5 w-3.5 text-violet-400" />
-              <span>Next-Gen Travel Engine • Gemini 3.6 Flash</span>
+              <span>Next-Gen Travel Intelligence • Tailored To Your Vibe</span>
             </div>
+
 
             {/* Main Headline with Animated Rotating Destinations */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]">

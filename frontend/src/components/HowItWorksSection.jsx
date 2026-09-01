@@ -17,12 +17,13 @@ const steps = [
     step: "02",
     icon: Cpu,
     title: "AI Synthesis & Curation",
-    description: "Our Gemini AI travel engine processes regional geography, top attractions, travel pacing, dining hotspots, and intelligent cost breakdowns.",
-    badge: "Step 2: Processing",
+    description: "Our intelligent travel engine processes regional geography, top attractions, travel pacing, dining hotspots, and transparent cost breakdowns.",
+    badge: "Step 2: Curation",
     gradient: "from-cyan-500 to-blue-600",
     glow: "rgba(6, 182, 212, 0.2)",
-    highlights: ["Smart Time Pacing", "Hotel & Dining Matches", "Budget Optimization"]
+    highlights: ["Smart Route Pacing", "Hotel & Dining Matches", "Budget Optimization"]
   },
+
   {
     step: "03",
     icon: CheckSquare,

@@ -93,8 +93,9 @@ const FeaturesSection = () => {
             </span>
           </h2>
           <p className="mt-3 text-sm sm:text-base text-slate-400">
-            Combine advanced LLM reasoning with real traveler logic to replace hours of research with instant perfection.
+            Combine intelligent travel curation with real traveler logic to replace hours of chaotic research with instant perfection.
           </p>
+
         </div>
 
         {/* Bento Grid */}

@@ -50,8 +50,9 @@ const AIGenerationLoader = ({ destination, budget }) => {
       {/* Header */}
       <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-3 shadow-lg shadow-violet-500/20">
         <Radio className="h-3.5 w-3.5 text-violet-400 animate-pulse" />
-        <span>Gemini 3.6 Flash Neural Synthesis</span>
+        <span>AI Travel Concierge in Action</span>
       </div>
+
 
       <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
         Engineering Your Journey to{" "}

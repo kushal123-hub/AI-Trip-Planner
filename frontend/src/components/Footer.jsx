@@ -25,13 +25,14 @@ const Footer = () => {
               The intelligent AI trip planner creating bespoke, day-by-day travel itineraries, smart budget allocations, and verified stays.
             </p>
 
-            <div className="flex items-center gap-2 text-[11px] text-slate-500 pt-2">
-              <span>Powered by FastAPI</span>
+            <div className="flex items-center gap-2 text-[11px] text-slate-500 pt-2 font-medium">
+              <span>Verified Stays</span>
               <span>•</span>
-              <span>Gemini AI</span>
+              <span>Local Gastronomy</span>
               <span>•</span>
-              <span>React & Tailwind</span>
+              <span>Bespoke Pacing</span>
             </div>
+
           </div>
 
           {/* Quick Links */}
