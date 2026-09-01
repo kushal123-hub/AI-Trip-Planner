@@ -20,11 +20,15 @@ import {
   Share2,
   AlertCircle,
   Tag,
-  Clock
+  Clock,
+  Map as MapIcon,
+  ListFilter
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import API from "../api/api";
 import AIGenerationLoader from "../components/AIGenerationLoader";
+import ItineraryMap from "../components/ItineraryMap";
+
 
 const Itinerary = () => {
   const { id } = useParams();
@@ -36,6 +40,7 @@ const Itinerary = () => {
   const [error, setError] = useState("");
   const [expandedDay, setExpandedDay] = useState(1);
   const [checkedItems, setCheckedItems] = useState({});
+  const [activeViewMode, setActiveViewMode] = useState("split"); // "split" | "timeline" | "map"
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -257,8 +262,58 @@ const Itinerary = () => {
         </div>
       </div>
 
+      {/* View Mode Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="inline-flex rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl">
+          <button
+            onClick={() => setActiveViewMode("split")}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+              activeViewMode === "split"
+                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <MapIcon className="h-3.5 w-3.5" />
+            <span>Map & Schedule</span>
+          </button>
+
+          <button
+            onClick={() => setActiveViewMode("timeline")}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+              activeViewMode === "timeline"
+                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <ListFilter className="h-3.5 w-3.5" />
+            <span>Timeline Only</span>
+          </button>
+
+          <button
+            onClick={() => setActiveViewMode("map")}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+              activeViewMode === "map"
+                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Compass className="h-3.5 w-3.5" />
+            <span>Full Map View</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Embedded Map in Split / Map Only View */}
+      {(activeViewMode === "split" || activeViewMode === "map") && (
+        <div className="mb-8">
+          <ItineraryMap itinerary={itinerary} destination={trip.destination} />
+        </div>
+      )}
+
       {/* Main Grid: 2 Columns */}
+      {activeViewMode !== "map" && (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
         
         {/* Left Column (8 cols): Overview & Daily Timeline */}
         <div className="lg:col-span-8 space-y-6">
@@ -462,9 +517,10 @@ const Itinerary = () => {
         </div>
 
       </div>
+      )}
 
     </div>
   );
 };
 
-export default Itinerary;
+export default Itinerary;

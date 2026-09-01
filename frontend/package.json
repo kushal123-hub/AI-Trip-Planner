@@ -20,9 +20,11 @@
     "clsx": "^2.1.1",
     "framer-motion": "^13.1.1",
     "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.38.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.18.1",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3"

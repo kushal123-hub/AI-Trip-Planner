@@ -17,9 +17,13 @@ import {
   Compass,
   Download,
   Share2,
-  ExternalLink
+  ExternalLink,
+  Map as MapIcon,
+  ListFilter
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import ItineraryMap from "./ItineraryMap";
+
 
 const sampleItineraries = [
   {
@@ -229,9 +233,9 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
           </p>
         </div>
 
-        {/* If showing sample, provide switcher tabs */}
-        {!activeItineraryData && (
-          <div className="flex justify-center mb-8">
+        {/* If showing sample, provide switcher tabs and map toggle */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          {!activeItineraryData ? (
             <div className="inline-flex rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl">
               {sampleItineraries.map((sample, idx) => (
                 <button
@@ -251,11 +255,36 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
                 </button>
               ))}
             </div>
+          ) : (
+            <div />
+          )}
+
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className={`px-4 py-2.5 rounded-2xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+              showMap
+                ? "bg-violet-600/20 border-violet-500/40 text-violet-300 shadow-md shadow-violet-600/20"
+                : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+            }`}
+          >
+            <MapIcon className="h-4 w-4 text-violet-400" />
+            <span>{showMap ? "Hide Interactive Route Map" : "Show Interactive Route Map"}</span>
+          </button>
+        </div>
+
+        {/* Embedded Interactive Route Map */}
+        {showMap && (
+          <div className="mb-8">
+            <ItineraryMap
+              itinerary={displayData}
+              destination={displayData.destination}
+            />
           </div>
         )}
 
         {/* Main Dossier Card */}
         <div className="rounded-3xl border border-white/15 bg-slate-900/80 shadow-2xl backdrop-blur-2xl overflow-hidden">
+
           
           {/* Trip Header Banner */}
           <div className="p-6 sm:p-8 bg-gradient-to-r from-violet-950/80 via-slate-900 to-slate-950 border-b border-white/10">

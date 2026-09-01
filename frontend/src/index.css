@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @layer base {
   :root {
@@ -203,3 +204,31 @@
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite;
 }
+
+/* Custom Leaflet Dark UI */
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(16px) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.leaflet-container {
+  background: #090d16 !important;
+  font-family: inherit !important;
+}
+
