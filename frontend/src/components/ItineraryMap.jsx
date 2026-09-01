@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import L from "leaflet";
+import * as L_module from "leaflet";
 import { 
   MapPin, 
   Navigation, 
@@ -11,54 +11,8 @@ import {
 } from "lucide-react";
 import { getCityCenter, getOffsetCoordinates, extractPlaceName } from "../utils/geoUtils";
 
-// Custom Leaflet DivIcons with SVG & glow
-const createCustomIcon = (type, numberStr = "") => {
-  let bgGradient = "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)";
-  let border = "#c084fc";
-  let shadow = "rgba(168, 85, 247, 0.4)";
-
-  if (type === "hotel") {
-    bgGradient = "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)";
-    border = "#38bdf8";
-    shadow = "rgba(6, 182, 212, 0.4)";
-  } else if (type === "restaurant") {
-    bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)";
-    border = "#fbbf24";
-    shadow = "rgba(245, 158, 11, 0.4)";
-  }
-
-  const html = `
-    <div style="
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: ${bgGradient};
-      border: 2px solid ${border};
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      box-shadow: 0 0 14px ${shadow};
-      cursor: pointer;
-    ">
-      <span style="
-        transform: rotate(45deg);
-        color: white;
-        font-weight: 800;
-        font-size: 11px;
-        font-family: sans-serif;
-      ">${numberStr}</span>
-    </div>
-  `;
-
-  return L.divIcon({
-    className: "custom-map-pin",
-    html: html,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-  });
-};
+// Normalize Leaflet export across ESM/CJS
+const L = L_module.default || L_module;
 
 const ItineraryMap = ({ itinerary, destination }) => {
   const mapContainerRef = useRef(null);
@@ -68,9 +22,16 @@ const ItineraryMap = ({ itinerary, destination }) => {
   const [activeDay, setActiveDay] = useState("all");
   const [showHotels, setShowHotels] = useState(true);
   const [showRestaurants, setShowRestaurants] = useState(true);
+  const [mapError, setMapError] = useState(false);
 
   // Compute baseline coordinates
-  const cityCenter = useMemo(() => getCityCenter(destination), [destination]);
+  const cityCenter = useMemo(() => {
+    try {
+      return getCityCenter(destination);
+    } catch (e) {
+      return [35.0116, 135.7681];
+    }
+  }, [destination]);
 
   // Extract and build structured map markers
   const { markersByDay, hotelMarkers, restaurantMarkers, allDayNumbers } = useMemo(() => {
@@ -134,13 +95,72 @@ const ItineraryMap = ({ itinerary, destination }) => {
     };
   }, [itinerary, cityCenter]);
 
+  // Helper to create custom div icon safely
+  const createIcon = (type, numberStr = "") => {
+    if (!L || typeof L.divIcon !== "function") return null;
+
+    let bgGradient = "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)";
+    let border = "#c084fc";
+    let shadow = "rgba(168, 85, 247, 0.4)";
+
+    if (type === "hotel") {
+      bgGradient = "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)";
+      border = "#38bdf8";
+      shadow = "rgba(6, 182, 212, 0.4)";
+    } else if (type === "restaurant") {
+      bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)";
+      border = "#fbbf24";
+      shadow = "rgba(245, 158, 11, 0.4)";
+    }
+
+    const html = `
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: ${bgGradient};
+        border: 2px solid ${border};
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 0 14px ${shadow};
+        cursor: pointer;
+      ">
+        <span style="
+          transform: rotate(45deg);
+          color: white;
+          font-weight: 800;
+          font-size: 11px;
+          font-family: sans-serif;
+        ">${numberStr}</span>
+      </div>
+    `;
+
+    return L.divIcon({
+      className: "custom-map-pin",
+      html: html,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  };
+
   // Initialize Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
+    if (typeof window === "undefined" || !L || typeof L.map !== "function") {
+      setMapError(true);
+      return;
+    }
 
     // Cleanup previous map instance if exists
     if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
+      try {
+        mapInstanceRef.current.remove();
+      } catch (e) {
+        // ignore
+      }
       mapInstanceRef.current = null;
     }
 
@@ -159,134 +179,143 @@ const ItineraryMap = ({ itinerary, destination }) => {
       const layerGroup = L.layerGroup().addTo(map);
       layerGroupRef.current = layerGroup;
       mapInstanceRef.current = map;
+      setMapError(false);
     } catch (e) {
-      console.error("Leaflet init error", e);
+      console.error("Leaflet map initialization error:", e);
+      setMapError(true);
     }
 
     return () => {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.remove();
+        } catch (e) {
+          // ignore
+        }
         mapInstanceRef.current = null;
       }
     };
   }, [cityCenter]);
 
-  // Update Layers & Markers when activeDay, showHotels, showRestaurants change
+  // Update Layers & Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
     const layerGroup = layerGroupRef.current;
-    if (!map || !layerGroup) return;
+    if (!map || !layerGroup || !L) return;
 
-    layerGroup.clearLayers();
+    try {
+      layerGroup.clearLayers();
+      const boundsPoints = [];
 
-    const boundsPoints = [];
-
-    // 1. Draw Route Polylines
-    if (activeDay === "all") {
-      Object.entries(markersByDay).forEach(([d, markers]) => {
-        if (markers.length > 1) {
-          const poly = L.polyline(markers.map((m) => m.coordinates), {
-            color: "#8b5cf6",
-            weight: 3.5,
-            opacity: 0.7,
-            dashArray: "6, 6",
+      // 1. Draw Route Polylines
+      if (activeDay === "all") {
+        Object.entries(markersByDay).forEach(([d, markers]) => {
+          if (markers.length > 1) {
+            const poly = L.polyline(markers.map((m) => m.coordinates), {
+              color: "#8b5cf6",
+              weight: 3.5,
+              opacity: 0.7,
+              dashArray: "6, 6",
+            });
+            poly.addTo(layerGroup);
+          }
+        });
+      } else {
+        const dayMarkers = markersByDay[activeDay] || [];
+        if (dayMarkers.length > 1) {
+          const poly = L.polyline(dayMarkers.map((m) => m.coordinates), {
+            color: "#a855f7",
+            weight: 4,
+            opacity: 0.9,
           });
           poly.addTo(layerGroup);
         }
-      });
-    } else {
-      const dayMarkers = markersByDay[activeDay] || [];
-      if (dayMarkers.length > 1) {
-        const poly = L.polyline(dayMarkers.map((m) => m.coordinates), {
-          color: "#a855f7",
-          weight: 4,
-          opacity: 0.9,
-        });
-        poly.addTo(layerGroup);
       }
-    }
 
-    // 2. Add Activity Markers
-    const visibleActivities = activeDay === "all" ? Object.values(markersByDay).flat() : markersByDay[activeDay] || [];
-    visibleActivities.forEach((m) => {
-      boundsPoints.push(m.coordinates);
-      const icon = createCustomIcon("activity", `${m.stepNumber}`);
-      const marker = L.marker(m.coordinates, { icon });
-
-      const popupContent = document.createElement("div");
-      popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
-      popupContent.innerHTML = `
-        <div class="flex items-center gap-1.5">
-          <span style="background: rgba(139, 92, 246, 0.25); color: #c084fc; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
-            Day ${m.day} • Stop ${m.stepNumber}
-          </span>
-        </div>
-        <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${m.placeName}</h4>
-        <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${m.fullText}</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
-          Navigate in Google Maps ↗
-        </a>
-      `;
-
-      marker.bindPopup(popupContent);
-      marker.addTo(layerGroup);
-    });
-
-    // 3. Add Hotels
-    if (showHotels) {
-      hotelMarkers.forEach((h) => {
-        boundsPoints.push(h.coordinates);
-        const icon = createCustomIcon("hotel", "H");
-        const marker = L.marker(h.coordinates, { icon });
+      // 2. Add Activity Markers
+      const visibleActivities = activeDay === "all" ? Object.values(markersByDay).flat() : markersByDay[activeDay] || [];
+      visibleActivities.forEach((m) => {
+        boundsPoints.push(m.coordinates);
+        const icon = createIcon("activity", `${m.stepNumber}`);
+        const marker = icon ? L.marker(m.coordinates, { icon }) : L.marker(m.coordinates);
 
         const popupContent = document.createElement("div");
         popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
         popupContent.innerHTML = `
-          <span style="background: rgba(6, 182, 212, 0.25); color: #38bdf8; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
-            Accommodation
-          </span>
-          <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${h.placeName}</h4>
-          <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${h.fullText}</p>
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #0891b2; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
-            Find on Google Maps ↗
+          <div class="flex items-center gap-1.5">
+            <span style="background: rgba(139, 92, 246, 0.25); color: #c084fc; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+              Day ${m.day} • Stop ${m.stepNumber}
+            </span>
+          </div>
+          <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${m.placeName}</h4>
+          <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${m.fullText}</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+            Navigate in Google Maps ↗
           </a>
         `;
 
         marker.bindPopup(popupContent);
         marker.addTo(layerGroup);
       });
-    }
 
-    // 4. Add Restaurants
-    if (showRestaurants) {
-      restaurantMarkers.forEach((r) => {
-        boundsPoints.push(r.coordinates);
-        const icon = createCustomIcon("restaurant", "R");
-        const marker = L.marker(r.coordinates, { icon });
+      // 3. Add Hotels
+      if (showHotels) {
+        hotelMarkers.forEach((h) => {
+          boundsPoints.push(h.coordinates);
+          const icon = createIcon("hotel", "H");
+          const marker = icon ? L.marker(h.coordinates, { icon }) : L.marker(h.coordinates);
 
-        const popupContent = document.createElement("div");
-        popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
-        popupContent.innerHTML = `
-          <span style="background: rgba(245, 158, 11, 0.25); color: #fbbf24; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
-            Dining Spot
-          </span>
-          <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${r.placeName}</h4>
-          <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${r.fullText}</p>
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #d97706; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
-            View on Google Maps ↗
-          </a>
-        `;
+          const popupContent = document.createElement("div");
+          popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
+          popupContent.innerHTML = `
+            <span style="background: rgba(6, 182, 212, 0.25); color: #38bdf8; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+              Accommodation
+            </span>
+            <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${h.placeName}</h4>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${h.fullText}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #0891b2; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+              Find on Google Maps ↗
+            </a>
+          `;
 
-        marker.bindPopup(popupContent);
-        marker.addTo(layerGroup);
-      });
-    }
+          marker.bindPopup(popupContent);
+          marker.addTo(layerGroup);
+        });
+      }
 
-    // Recenter map to bounds
-    if (boundsPoints.length > 1) {
-      map.fitBounds(boundsPoints, { padding: [50, 50], maxZoom: 15, duration: 0.5 });
-    } else if (boundsPoints.length === 1) {
-      map.setView(boundsPoints[0], 13);
+      // 4. Add Restaurants
+      if (showRestaurants) {
+        restaurantMarkers.forEach((r) => {
+          boundsPoints.push(r.coordinates);
+          const icon = createIcon("restaurant", "R");
+          const marker = icon ? L.marker(r.coordinates, { icon }) : L.marker(r.coordinates);
+
+          const popupContent = document.createElement("div");
+          popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
+          popupContent.innerHTML = `
+            <span style="background: rgba(245, 158, 11, 0.25); color: #fbbf24; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+              Dining Spot
+            </span>
+            <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${r.placeName}</h4>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${r.fullText}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #d97706; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+              View on Google Maps ↗
+            </a>
+          `;
+
+          marker.bindPopup(popupContent);
+          marker.addTo(layerGroup);
+        });
+      }
+
+      // Recenter map to bounds
+      if (boundsPoints.length > 1) {
+        map.fitBounds(boundsPoints, { padding: [50, 50], maxZoom: 15 });
+      } else if (boundsPoints.length === 1) {
+        map.setView(boundsPoints[0], 13);
+      }
+    } catch (err) {
+      console.error("Error updating map layers:", err);
     }
   }, [activeDay, showHotels, showRestaurants, markersByDay, hotelMarkers, restaurantMarkers, destination]);
 
@@ -299,6 +328,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
         {/* Day Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
+            type="button"
             onClick={() => setActiveDay("all")}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeDay === "all"
@@ -311,6 +341,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
           {allDayNumbers.map((d) => (
             <button
               key={d}
+              type="button"
               onClick={() => setActiveDay(d)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 activeDay === d
@@ -326,6 +357,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
         {/* Toggle Layers */}
         <div className="flex items-center gap-2 text-xs">
           <button
+            type="button"
             onClick={() => setShowHotels(!showHotels)}
             className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
               showHotels 
@@ -338,6 +370,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
           </button>
 
           <button
+            type="button"
             onClick={() => setShowRestaurants(!showRestaurants)}
             className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
               showRestaurants 
@@ -352,11 +385,21 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
       </div>
 
-      {/* Map Container */}
-      <div 
-        ref={mapContainerRef} 
-        className="h-[450px] sm:h-[500px] w-full relative bg-[#090d16]" 
-      />
+      {/* Map Container / Fallback */}
+      {mapError ? (
+        <div className="h-[300px] w-full flex flex-col items-center justify-center p-6 text-center bg-slate-950/60">
+          <Compass className="h-10 w-10 text-violet-400 mb-2 animate-pulse" />
+          <p className="text-xs font-bold text-white">Interactive Map Ready</p>
+          <p className="text-[11px] text-slate-400 max-w-sm mt-1">
+            Displaying coordinates for {destination || "Selected Destination"}.
+          </p>
+        </div>
+      ) : (
+        <div 
+          ref={mapContainerRef} 
+          className="h-[420px] sm:h-[480px] w-full relative bg-[#090d16]" 
+        />
+      )}
 
       {/* Map Footer Legend */}
       <div className="p-3 bg-slate-950/90 border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] text-slate-400 gap-2 px-4">

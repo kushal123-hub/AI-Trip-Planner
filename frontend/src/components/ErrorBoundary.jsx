@@ -19,12 +19,12 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col items-center justify-center p-6 text-center">
-          <div className="h-16 w-16 rounded-3xl bg-violet-600/20 border border-violet-500/30 text-violet-400 flex items-center justify-center mb-4">
+          <div className="h-16 w-16 rounded-3xl bg-rose-600/20 border border-rose-500/30 text-rose-400 flex items-center justify-center mb-4">
             <Compass className="h-8 w-8 animate-spin-slow" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Something went wrong</h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-6">
-            An unexpected render issue occurred. Click below to reload the application.
+          <h2 className="text-2xl font-bold text-white mb-2">Render Error Caught</h2>
+          <p className="text-xs text-rose-300 max-w-lg mx-auto mb-4 bg-rose-950/60 p-3 rounded-xl border border-rose-500/30 font-mono text-left whitespace-pre-wrap break-all">
+            {this.state.error?.toString() || "Unknown error"}
           </p>
           <button
             onClick={() => window.location.reload()}
@@ -36,6 +36,7 @@ class ErrorBoundary extends React.Component {
         </div>
       );
     }
+
 
     return this.props.children;
   }

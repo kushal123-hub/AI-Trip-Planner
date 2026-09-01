@@ -183,17 +183,24 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
   const [selectedSampleIndex, setSelectedSampleIndex] = useState(0);
   const [expandedDay, setExpandedDay] = useState(1);
   const [checkedItems, setCheckedItems] = useState({});
+  const [showMap, setShowMap] = useState(true);
 
-  const displayData = activeItineraryData 
-    ? {
+  const displayData = useMemo(() => {
+    if (activeItineraryData && activeItineraryData.itinerary) {
+      const trip = activeItineraryData.trip || {};
+      const startDateStr = trip.start_date ? new Date(trip.start_date).toLocaleDateString() : "TBD";
+      const endDateStr = trip.end_date ? new Date(trip.end_date).toLocaleDateString() : "TBD";
+      return {
         ...activeItineraryData.itinerary,
-        destination: activeItineraryData.trip.destination,
-        dates: `${new Date(activeItineraryData.trip.start_date).toLocaleDateString()} to ${new Date(activeItineraryData.trip.end_date).toLocaleDateString()}`,
-        budget: parseFloat(activeItineraryData.trip.budget),
-        style: activeItineraryData.trip.travel_style || "Curated",
-        tripId: activeItineraryData.trip.id,
-      }
-    : sampleItineraries[selectedSampleIndex];
+        destination: trip.destination || "Custom Adventure",
+        dates: `${startDateStr} to ${endDateStr}`,
+        budget: parseFloat(trip.budget || 0),
+        style: trip.travel_style || "Curated",
+        tripId: trip.id,
+      };
+    }
+    return sampleItineraries[selectedSampleIndex] || sampleItineraries[0];
+  }, [activeItineraryData, selectedSampleIndex]);
 
   const breakdown = displayData.budget_breakdown || {};
   const hotelCost = parseFloat(breakdown.hotel || 0);
@@ -209,6 +216,7 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
       [idx]: !prev[idx],
     }));
   };
+
 
   return (
     <section id="itinerary-preview" className="py-24 relative overflow-hidden">
