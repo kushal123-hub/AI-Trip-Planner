@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import L from "leaflet";
 import { 
   MapPin, 
@@ -8,25 +7,21 @@ import {
   Hotel, 
   Utensils, 
   Compass, 
-  Layers, 
   Calendar 
 } from "lucide-react";
 import { getCityCenter, getOffsetCoordinates, extractPlaceName } from "../utils/geoUtils";
 
 // Custom Leaflet DivIcons with SVG & glow
 const createCustomIcon = (type, numberStr = "") => {
-  let color = "#8b5cf6"; // Violet for activities
   let bgGradient = "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)";
   let border = "#c084fc";
   let shadow = "rgba(168, 85, 247, 0.4)";
 
   if (type === "hotel") {
-    color = "#06b6d4"; // Cyan
     bgGradient = "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)";
     border = "#38bdf8";
     shadow = "rgba(6, 182, 212, 0.4)";
   } else if (type === "restaurant") {
-    color = "#f59e0b"; // Amber
     bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)";
     border = "#fbbf24";
     shadow = "rgba(245, 158, 11, 0.4)";
@@ -65,21 +60,12 @@ const createCustomIcon = (type, numberStr = "") => {
   });
 };
 
-// Map Recenter Helper Component
-const ChangeMapView = ({ center, bounds }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (bounds && bounds.length > 1) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, duration: 1 });
-    } else if (center) {
-      map.setView(center, 13, { animate: true });
-    }
-  }, [center, bounds, map]);
-  return null;
-};
-
 const ItineraryMap = ({ itinerary, destination }) => {
-  const [activeDay, setActiveDay] = useState("all"); // "all" or day number
+  const mapContainerRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const layerGroupRef = useRef(null);
+
+  const [activeDay, setActiveDay] = useState("all");
   const [showHotels, setShowHotels] = useState(true);
   const [showRestaurants, setShowRestaurants] = useState(true);
 
@@ -118,24 +104,24 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
     // 2. Process Hotels
     const hotels = (itinerary.recommended_hotels || []).map((h, idx) => {
-      const name = typeof h === "string" ? h.replace(/\s*\(.*?\)/, "").trim() : h;
+      const name = typeof h === "string" ? h.replace(/\s*\(.*?\)/, "").trim() : (h || "Hotel");
       return {
         id: `hotel-${idx}`,
         type: "hotel",
         placeName: name,
-        fullText: h,
+        fullText: typeof h === "string" ? h : name,
         coordinates: getOffsetCoordinates(cityCenter, name + "hotel", idx + 20, 0.022),
       };
     });
 
     // 3. Process Restaurants
     const restaurants = (itinerary.recommended_restaurants || []).map((r, idx) => {
-      const name = typeof r === "string" ? r.replace(/\s*\(.*?\)/, "").trim() : r;
+      const name = typeof r === "string" ? r.replace(/\s*\(.*?\)/, "").trim() : (r || "Restaurant");
       return {
         id: `rest-${idx}`,
         type: "restaurant",
         placeName: name,
-        fullText: r,
+        fullText: typeof r === "string" ? r : name,
         coordinates: getOffsetCoordinates(cityCenter, name + "rest", idx + 40, 0.028),
       };
     });
@@ -148,45 +134,161 @@ const ItineraryMap = ({ itinerary, destination }) => {
     };
   }, [itinerary, cityCenter]);
 
-  // Determine active visible markers based on selected day
-  const visibleActivityMarkers = useMemo(() => {
-    if (activeDay === "all") {
-      return Object.values(markersByDay).flat();
+  // Initialize Map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    // Cleanup previous map instance if exists
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
     }
-    return markersByDay[activeDay] || [];
-  }, [markersByDay, activeDay]);
 
-  // Active Route Polylines for day-by-day
-  const routePolylines = useMemo(() => {
-    if (activeDay === "all") {
-      return Object.entries(markersByDay).map(([d, markers]) => ({
-        day: d,
-        color: "#8b5cf6",
-        coords: markers.map((m) => m.coordinates),
-      }));
+    try {
+      const map = L.map(mapContainerRef.current, {
+        center: cityCenter,
+        zoom: 13,
+        scrollWheelZoom: false,
+      });
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+        maxZoom: 19,
+      }).addTo(map);
+
+      const layerGroup = L.layerGroup().addTo(map);
+      layerGroupRef.current = layerGroup;
+      mapInstanceRef.current = map;
+    } catch (e) {
+      console.error("Leaflet init error", e);
     }
-    const dayMarkers = markersByDay[activeDay] || [];
-    return [
-      {
-        day: activeDay,
-        color: "#a855f7",
-        coords: dayMarkers.map((m) => m.coordinates),
-      },
-    ];
-  }, [markersByDay, activeDay]);
 
-  // Compute bounding box for map view
-  const activeBounds = useMemo(() => {
-    const points = visibleActivityMarkers.map((m) => m.coordinates);
-    if (showHotels) hotelMarkers.forEach((h) => points.push(h.coordinates));
-    if (showRestaurants) restaurantMarkers.forEach((r) => points.push(r.coordinates));
-    return points.length > 0 ? points : [cityCenter];
-  }, [visibleActivityMarkers, hotelMarkers, restaurantMarkers, showHotels, showRestaurants, cityCenter]);
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [cityCenter]);
 
-  const openGoogleMaps = (query) => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ", " + destination)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+  // Update Layers & Markers when activeDay, showHotels, showRestaurants change
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    const layerGroup = layerGroupRef.current;
+    if (!map || !layerGroup) return;
+
+    layerGroup.clearLayers();
+
+    const boundsPoints = [];
+
+    // 1. Draw Route Polylines
+    if (activeDay === "all") {
+      Object.entries(markersByDay).forEach(([d, markers]) => {
+        if (markers.length > 1) {
+          const poly = L.polyline(markers.map((m) => m.coordinates), {
+            color: "#8b5cf6",
+            weight: 3.5,
+            opacity: 0.7,
+            dashArray: "6, 6",
+          });
+          poly.addTo(layerGroup);
+        }
+      });
+    } else {
+      const dayMarkers = markersByDay[activeDay] || [];
+      if (dayMarkers.length > 1) {
+        const poly = L.polyline(dayMarkers.map((m) => m.coordinates), {
+          color: "#a855f7",
+          weight: 4,
+          opacity: 0.9,
+        });
+        poly.addTo(layerGroup);
+      }
+    }
+
+    // 2. Add Activity Markers
+    const visibleActivities = activeDay === "all" ? Object.values(markersByDay).flat() : markersByDay[activeDay] || [];
+    visibleActivities.forEach((m) => {
+      boundsPoints.push(m.coordinates);
+      const icon = createCustomIcon("activity", `${m.stepNumber}`);
+      const marker = L.marker(m.coordinates, { icon });
+
+      const popupContent = document.createElement("div");
+      popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
+      popupContent.innerHTML = `
+        <div class="flex items-center gap-1.5">
+          <span style="background: rgba(139, 92, 246, 0.25); color: #c084fc; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            Day ${m.day} • Stop ${m.stepNumber}
+          </span>
+        </div>
+        <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${m.placeName}</h4>
+        <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${m.fullText}</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+          Navigate in Google Maps ↗
+        </a>
+      `;
+
+      marker.bindPopup(popupContent);
+      marker.addTo(layerGroup);
+    });
+
+    // 3. Add Hotels
+    if (showHotels) {
+      hotelMarkers.forEach((h) => {
+        boundsPoints.push(h.coordinates);
+        const icon = createCustomIcon("hotel", "H");
+        const marker = L.marker(h.coordinates, { icon });
+
+        const popupContent = document.createElement("div");
+        popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
+        popupContent.innerHTML = `
+          <span style="background: rgba(6, 182, 212, 0.25); color: #38bdf8; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            Accommodation
+          </span>
+          <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${h.placeName}</h4>
+          <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${h.fullText}</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #0891b2; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+            Find on Google Maps ↗
+          </a>
+        `;
+
+        marker.bindPopup(popupContent);
+        marker.addTo(layerGroup);
+      });
+    }
+
+    // 4. Add Restaurants
+    if (showRestaurants) {
+      restaurantMarkers.forEach((r) => {
+        boundsPoints.push(r.coordinates);
+        const icon = createCustomIcon("restaurant", "R");
+        const marker = L.marker(r.coordinates, { icon });
+
+        const popupContent = document.createElement("div");
+        popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
+        popupContent.innerHTML = `
+          <span style="background: rgba(245, 158, 11, 0.25); color: #fbbf24; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            Dining Spot
+          </span>
+          <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${r.placeName}</h4>
+          <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${r.fullText}</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #d97706; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+            View on Google Maps ↗
+          </a>
+        `;
+
+        marker.bindPopup(popupContent);
+        marker.addTo(layerGroup);
+      });
+    }
+
+    // Recenter map to bounds
+    if (boundsPoints.length > 1) {
+      map.fitBounds(boundsPoints, { padding: [50, 50], maxZoom: 15, duration: 0.5 });
+    } else if (boundsPoints.length === 1) {
+      map.setView(boundsPoints[0], 13);
+    }
+  }, [activeDay, showHotels, showRestaurants, markersByDay, hotelMarkers, restaurantMarkers, destination]);
 
   return (
     <div className="rounded-3xl border border-white/15 bg-slate-900/80 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col">
@@ -250,131 +352,11 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
       </div>
 
-      {/* Embedded Leaflet Map */}
-      <div className="h-[450px] sm:h-[520px] w-full relative">
-        <MapContainer
-          center={cityCenter}
-          zoom={13}
-          scrollWheelZoom={false}
-          className="h-full w-full"
-        >
-          {/* CartoDB Dark Matter Tiles (High performance, dark aesthetic, free) */}
-          <TileLayer
-            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          />
-
-          <ChangeMapView bounds={activeBounds} center={cityCenter} />
-
-          {/* Activity Polylines */}
-          {routePolylines.map((route, i) => (
-            <Polyline
-              key={i}
-              positions={route.coords}
-              pathOptions={{
-                color: route.color,
-                weight: 4,
-                opacity: 0.8,
-                dashArray: activeDay === "all" ? "6, 6" : undefined,
-              }}
-            />
-          ))}
-
-          {/* Activity Markers */}
-          {visibleActivityMarkers.map((marker) => (
-            <Marker
-              key={marker.id}
-              position={marker.coordinates}
-              icon={createCustomIcon("activity", `${marker.stepNumber}`)}
-            >
-              <Popup>
-                <div className="p-3.5 min-w-[200px] max-w-[260px] space-y-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded-md bg-violet-600/30 text-violet-300 text-[10px] font-bold uppercase tracking-wider">
-                      Day {marker.day} • Stop {marker.stepNumber}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-bold text-white leading-tight">
-                    {marker.placeName}
-                  </h4>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">
-                    {marker.fullText}
-                  </p>
-                  <button
-                    onClick={() => openGoogleMaps(marker.placeName)}
-                    className="w-full mt-2 py-1.5 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
-                  >
-                    <span>Navigate in Google Maps</span>
-                    <ExternalLink className="h-3 w-3" />
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-
-          {/* Hotel Markers */}
-          {showHotels &&
-            hotelMarkers.map((hotel) => (
-              <Marker
-                key={hotel.id}
-                position={hotel.coordinates}
-                icon={createCustomIcon("hotel", "H")}
-              >
-                <Popup>
-                  <div className="p-3.5 min-w-[200px] max-w-[260px] space-y-2">
-                    <span className="px-2 py-0.5 rounded-md bg-cyan-600/30 text-cyan-300 text-[10px] font-bold uppercase tracking-wider">
-                      Accommodation
-                    </span>
-                    <h4 className="text-sm font-bold text-white leading-tight">
-                      {hotel.placeName}
-                    </h4>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      {hotel.fullText}
-                    </p>
-                    <button
-                      onClick={() => openGoogleMaps(hotel.placeName)}
-                      className="w-full mt-2 py-1.5 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
-                    >
-                      <span>Find on Google Maps</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </button>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-
-          {/* Restaurant Markers */}
-          {showRestaurants &&
-            restaurantMarkers.map((rest) => (
-              <Marker
-                key={rest.id}
-                position={rest.coordinates}
-                icon={createCustomIcon("restaurant", "R")}
-              >
-                <Popup>
-                  <div className="p-3.5 min-w-[200px] max-w-[260px] space-y-2">
-                    <span className="px-2 py-0.5 rounded-md bg-amber-600/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
-                      Dining Spot
-                    </span>
-                    <h4 className="text-sm font-bold text-white leading-tight">
-                      {rest.placeName}
-                    </h4>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      {rest.fullText}
-                    </p>
-                    <button
-                      onClick={() => openGoogleMaps(rest.placeName)}
-                      className="w-full mt-2 py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
-                    >
-                      <span>View on Google Maps</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </button>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-        </MapContainer>
-      </div>
+      {/* Map Container */}
+      <div 
+        ref={mapContainerRef} 
+        className="h-[450px] sm:h-[500px] w-full relative bg-[#090d16]" 
+      />
 
       {/* Map Footer Legend */}
       <div className="p-3 bg-slate-950/90 border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] text-slate-400 gap-2 px-4">
