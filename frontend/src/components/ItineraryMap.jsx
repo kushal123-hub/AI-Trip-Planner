@@ -7,7 +7,11 @@ import {
   Hotel, 
   Utensils, 
   Compass, 
-  Calendar 
+  Calendar,
+  Layers,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut
 } from "lucide-react";
 import { getCityCenter, getOffsetCoordinates, extractPlaceName } from "../utils/geoUtils";
 
@@ -18,10 +22,12 @@ const ItineraryMap = ({ itinerary, destination }) => {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const layerGroupRef = useRef(null);
+  const markersRef = useRef({});
 
   const [activeDay, setActiveDay] = useState("all");
   const [showHotels, setShowHotels] = useState(true);
   const [showRestaurants, setShowRestaurants] = useState(true);
+  const [selectedSpotId, setSelectedSpotId] = useState(null);
   const [mapError, setMapError] = useState(false);
 
   // Compute baseline coordinates
@@ -96,21 +102,22 @@ const ItineraryMap = ({ itinerary, destination }) => {
   }, [itinerary, cityCenter]);
 
   // Helper to create custom div icon safely
-  const createIcon = (type, numberStr = "") => {
+  const createIcon = (type, numberStr = "", isSelected = false) => {
     if (!L || typeof L.divIcon !== "function") return null;
 
     let bgGradient = "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)";
     let border = "#c084fc";
-    let shadow = "rgba(168, 85, 247, 0.4)";
+    let shadow = isSelected ? "0 0 25px #a855f7" : "0 0 14px rgba(168, 85, 247, 0.5)";
+    let scale = isSelected ? "scale(1.25)" : "scale(1)";
 
     if (type === "hotel") {
       bgGradient = "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)";
       border = "#38bdf8";
-      shadow = "rgba(6, 182, 212, 0.4)";
+      shadow = isSelected ? "0 0 25px #06b6d4" : "0 0 14px rgba(6, 182, 212, 0.5)";
     } else if (type === "restaurant") {
       bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)";
       border = "#fbbf24";
-      shadow = "rgba(245, 158, 11, 0.4)";
+      shadow = isSelected ? "0 0 25px #f59e0b" : "0 0 14px rgba(245, 158, 11, 0.5)";
     }
 
     const html = `
@@ -121,11 +128,12 @@ const ItineraryMap = ({ itinerary, destination }) => {
         width: 32px;
         height: 32px;
         background: ${bgGradient};
-        border: 2px solid ${border};
+        border: 2.5px solid ${border};
         border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        box-shadow: 0 0 14px ${shadow};
+        transform: rotate(-45deg) ${scale};
+        box-shadow: ${shadow};
         cursor: pointer;
+        transition: transform 0.2s ease;
       ">
         <span style="
           transform: rotate(45deg);
@@ -146,7 +154,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
     });
   };
 
-  // Initialize Map
+  // Initialize Map with ESRI World Dark Gray Canvas (100% Free, NO API KEY REQUIRED, Crystal Clear)
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (typeof window === "undefined" || !L || typeof L.map !== "function") {
@@ -169,11 +177,18 @@ const ItineraryMap = ({ itinerary, destination }) => {
         center: cityCenter,
         zoom: 13,
         scrollWheelZoom: false,
+        zoomControl: false, // custom zoom controls
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-        maxZoom: 19,
+      // 1. ESRI Dark Gray Canvas Base Tiles (Free & Keyless)
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+        attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &copy; OpenStreetMap contributors',
+        maxZoom: 16,
+      }).addTo(map);
+
+      // 2. ESRI Dark Gray Reference Labels (High clarity street and city names)
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 16,
       }).addTo(map);
 
       const layerGroup = L.layerGroup().addTo(map);
@@ -205,6 +220,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
     try {
       layerGroup.clearLayers();
+      markersRef.current = {};
       const boundsPoints = [];
 
       // 1. Draw Route Polylines
@@ -214,7 +230,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             const poly = L.polyline(markers.map((m) => m.coordinates), {
               color: "#8b5cf6",
               weight: 3.5,
-              opacity: 0.7,
+              opacity: 0.75,
               dashArray: "6, 6",
             });
             poly.addTo(layerGroup);
@@ -225,8 +241,8 @@ const ItineraryMap = ({ itinerary, destination }) => {
         if (dayMarkers.length > 1) {
           const poly = L.polyline(dayMarkers.map((m) => m.coordinates), {
             color: "#a855f7",
-            weight: 4,
-            opacity: 0.9,
+            weight: 4.5,
+            opacity: 0.95,
           });
           poly.addTo(layerGroup);
         }
@@ -236,7 +252,8 @@ const ItineraryMap = ({ itinerary, destination }) => {
       const visibleActivities = activeDay === "all" ? Object.values(markersByDay).flat() : markersByDay[activeDay] || [];
       visibleActivities.forEach((m) => {
         boundsPoints.push(m.coordinates);
-        const icon = createIcon("activity", `${m.stepNumber}`);
+        const isSelected = selectedSpotId === m.id;
+        const icon = createIcon("activity", `${m.stepNumber}`, isSelected);
         const marker = icon ? L.marker(m.coordinates, { icon }) : L.marker(m.coordinates);
 
         const popupContent = document.createElement("div");
@@ -256,13 +273,15 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
         marker.bindPopup(popupContent);
         marker.addTo(layerGroup);
+        markersRef.current[m.id] = marker;
       });
 
       // 3. Add Hotels
       if (showHotels) {
         hotelMarkers.forEach((h) => {
           boundsPoints.push(h.coordinates);
-          const icon = createIcon("hotel", "H");
+          const isSelected = selectedSpotId === h.id;
+          const icon = createIcon("hotel", "H", isSelected);
           const marker = icon ? L.marker(h.coordinates, { icon }) : L.marker(h.coordinates);
 
           const popupContent = document.createElement("div");
@@ -280,6 +299,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
           marker.bindPopup(popupContent);
           marker.addTo(layerGroup);
+          markersRef.current[h.id] = marker;
         });
       }
 
@@ -287,7 +307,8 @@ const ItineraryMap = ({ itinerary, destination }) => {
       if (showRestaurants) {
         restaurantMarkers.forEach((r) => {
           boundsPoints.push(r.coordinates);
-          const icon = createIcon("restaurant", "R");
+          const isSelected = selectedSpotId === r.id;
+          const icon = createIcon("restaurant", "R", isSelected);
           const marker = icon ? L.marker(r.coordinates, { icon }) : L.marker(r.coordinates);
 
           const popupContent = document.createElement("div");
@@ -305,31 +326,54 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
           marker.bindPopup(popupContent);
           marker.addTo(layerGroup);
+          markersRef.current[r.id] = marker;
         });
       }
 
       // Recenter map to bounds
       if (boundsPoints.length > 1) {
-        map.fitBounds(boundsPoints, { padding: [50, 50], maxZoom: 15 });
+        map.fitBounds(boundsPoints, { padding: [40, 40], maxZoom: 15 });
       } else if (boundsPoints.length === 1) {
         map.setView(boundsPoints[0], 13);
       }
     } catch (err) {
       console.error("Error updating map layers:", err);
     }
-  }, [activeDay, showHotels, showRestaurants, markersByDay, hotelMarkers, restaurantMarkers, destination]);
+  }, [activeDay, showHotels, showRestaurants, markersByDay, hotelMarkers, restaurantMarkers, destination, selectedSpotId]);
+
+  // Click on a stop to pan to it on map
+  const handleSelectSpot = (spot) => {
+    setSelectedSpotId(spot.id);
+    const map = mapInstanceRef.current;
+    if (map && spot.coordinates) {
+      map.flyTo(spot.coordinates, 15, { duration: 1 });
+      const marker = markersRef.current[spot.id];
+      if (marker) {
+        setTimeout(() => {
+          marker.openPopup();
+        }, 600);
+      }
+    }
+  };
+
+  const currentDayActivities = useMemo(() => {
+    if (activeDay === "all") {
+      return Object.values(markersByDay).flat();
+    }
+    return markersByDay[activeDay] || [];
+  }, [markersByDay, activeDay]);
 
   return (
-    <div className="rounded-3xl border border-white/15 bg-slate-900/80 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col">
+    <div className="rounded-3xl border border-white/15 bg-slate-900/90 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col">
       
       {/* Map Control Bar */}
-      <div className="p-4 bg-slate-950/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 bg-slate-950 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         
         {/* Day Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             type="button"
-            onClick={() => setActiveDay("all")}
+            onClick={() => { setActiveDay("all"); setSelectedSpotId(null); }}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeDay === "all"
                 ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
@@ -342,7 +386,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             <button
               key={d}
               type="button"
-              onClick={() => setActiveDay(d)}
+              onClick={() => { setActiveDay(d); setSelectedSpotId(null); }}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 activeDay === d
                   ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
@@ -361,12 +405,12 @@ const ItineraryMap = ({ itinerary, destination }) => {
             onClick={() => setShowHotels(!showHotels)}
             className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
               showHotels 
-                ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300" 
+                ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 shadow-sm" 
                 : "bg-white/5 border-white/5 text-slate-500"
             }`}
           >
             <Hotel className="h-3.5 w-3.5" />
-            <span>Stays</span>
+            <span>Stays ({hotelMarkers.length})</span>
           </button>
 
           <button
@@ -374,50 +418,101 @@ const ItineraryMap = ({ itinerary, destination }) => {
             onClick={() => setShowRestaurants(!showRestaurants)}
             className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
               showRestaurants 
-                ? "bg-amber-500/20 border-amber-500/40 text-amber-300" 
+                ? "bg-amber-500/20 border-amber-500/40 text-amber-300 shadow-sm" 
                 : "bg-white/5 border-white/5 text-slate-500"
             }`}
           >
             <Utensils className="h-3.5 w-3.5" />
-            <span>Dining</span>
+            <span>Dining ({restaurantMarkers.length})</span>
           </button>
         </div>
 
       </div>
 
-      {/* Map Container / Fallback */}
-      {mapError ? (
-        <div className="h-[300px] w-full flex flex-col items-center justify-center p-6 text-center bg-slate-950/60">
-          <Compass className="h-10 w-10 text-violet-400 mb-2 animate-pulse" />
-          <p className="text-xs font-bold text-white">Interactive Map Ready</p>
-          <p className="text-[11px] text-slate-400 max-w-sm mt-1">
-            Displaying coordinates for {destination || "Selected Destination"}.
-          </p>
-        </div>
-      ) : (
-        <div 
-          ref={mapContainerRef} 
-          className="h-[420px] sm:h-[480px] w-full relative bg-[#090d16]" 
-        />
-      )}
+      {/* Main Map Viewport & Interactive Stops Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 relative min-h-[460px]">
+        
+        {/* Map Viewport (8 cols) */}
+        <div className="lg:col-span-8 relative h-[380px] lg:h-[480px] w-full bg-[#12141a]">
+          {mapError ? (
+            <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center bg-slate-950/80">
+              <Compass className="h-10 w-10 text-violet-400 mb-2 animate-pulse" />
+              <p className="text-xs font-bold text-white">Route Map for {destination}</p>
+            </div>
+          ) : (
+            <div 
+              ref={mapContainerRef} 
+              className="h-full w-full relative bg-[#12141a]" 
+            />
+          )}
 
-      {/* Map Footer Legend */}
-      <div className="p-3 bg-slate-950/90 border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] text-slate-400 gap-2 px-4">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-violet-500 shadow-sm shadow-violet-500" />
-            <span>Activity Stops</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400" />
-            <span>Stays & Hotels</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400 shadow-sm shadow-amber-400" />
-            <span>Gastronomy</span>
-          </span>
+          {/* Custom Zoom Controls Floating on Map */}
+          <div className="absolute top-4 right-4 z-[400] flex flex-col gap-1.5">
+            <button
+              type="button"
+              onClick={() => mapInstanceRef.current?.zoomIn()}
+              className="h-8 w-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-white flex items-center justify-center shadow-lg transition"
+              title="Zoom In"
+            >
+              <ZoomIn className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => mapInstanceRef.current?.zoomOut()}
+              className="h-8 w-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-white flex items-center justify-center shadow-lg transition"
+              title="Zoom Out"
+            >
+              <ZoomOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-        <span className="text-slate-500 italic hidden sm:block">Click any marker for details & turn-by-turn navigation</span>
+
+        {/* Interactive Stops Quick-Nav Panel (4 cols) */}
+        <div className="lg:col-span-4 bg-slate-950/80 border-t lg:border-t-0 lg:border-l border-white/10 p-4 flex flex-col justify-between max-h-[480px] overflow-y-auto">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <Navigation className="h-3.5 w-3.5 text-violet-400" />
+                <span>Stops & Highlights ({currentDayActivities.length})</span>
+              </span>
+            </div>
+
+            <div className="space-y-2 pr-1">
+              {currentDayActivities.map((act) => {
+                const isSelected = selectedSpotId === act.id;
+                return (
+                  <button
+                    key={act.id}
+                    type="button"
+                    onClick={() => handleSelectSpot(act)}
+                    className={`w-full text-left p-2.5 rounded-2xl border text-xs transition cursor-pointer flex items-start gap-2.5 ${
+                      isSelected
+                        ? "bg-violet-600/20 border-violet-500 text-white shadow-md shadow-violet-600/20"
+                        : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10 hover:border-white/10"
+                    }`}
+                  >
+                    <div className="h-6 w-6 rounded-lg bg-violet-600/30 text-violet-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                      {act.stepNumber}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-white truncate">{act.placeName}</p>
+                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{act.fullText}</p>
+                    </div>
+                    <ChevronRight className="h-3.5 w-3.5 text-slate-500 shrink-0 mt-1" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400">
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-violet-500" /> Sights</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-cyan-400" /> Stays</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-400" /> Dining</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
