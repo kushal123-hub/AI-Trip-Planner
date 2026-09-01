@@ -1,6 +1,7 @@
 import React from "react";
 import { Compass, ArrowUp, Heart, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import AnimatedLogo from "./AnimatedLogo";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -14,19 +15,16 @@ const Footer = () => {
           
           {/* Brand Col */}
           <div className="md:col-span-2 space-y-3">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-400 p-0.5 shadow-md">
-                <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                  <Compass className="h-4 w-4 text-violet-400" />
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <AnimatedLogo size="sm" />
               <span className="text-lg font-bold text-white tracking-tight">
-                RoamRes <span className="text-violet-400">AI</span>
+                RoamRes <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">AI</span>
               </span>
             </div>
             <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
               The intelligent AI trip planner creating bespoke, day-by-day travel itineraries, smart budget allocations, and verified stays.
             </p>
+
             <div className="flex items-center gap-2 text-[11px] text-slate-500 pt-2">
               <span>Powered by FastAPI</span>
               <span>•</span>

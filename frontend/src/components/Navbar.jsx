@@ -14,6 +14,8 @@ import {
   ChevronDown
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import AnimatedLogo from "./AnimatedLogo";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -86,22 +88,19 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2.5 group cursor-pointer"
+          className="flex items-center gap-3 group cursor-pointer"
         >
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-violet-600 via-purple-500 to-cyan-400 p-0.5 shadow-lg shadow-violet-500/25 transition-transform duration-300 group-hover:scale-105">
-            <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Compass className="h-5 w-5 text-violet-400 group-hover:rotate-45 transition-transform duration-500" />
-            </div>
-          </div>
+          <AnimatedLogo size="md" />
           <div className="flex flex-col">
             <span className="text-lg font-extrabold tracking-tight text-white flex items-center gap-1">
               RoamRes <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">AI</span>
             </span>
-            <span className="text-[10px] font-medium tracking-widest text-slate-400 uppercase">
+            <span className="text-[10px] font-semibold tracking-widest text-slate-400 uppercase">
               Next-Gen Travel
             </span>
           </div>
         </Link>
+
 
         {/* Desktop Nav Links */}
         {isLandingPage ? (

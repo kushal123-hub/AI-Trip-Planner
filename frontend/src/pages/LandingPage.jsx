@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import HeroSection from "../components/HeroSection";
+import BrandMarquee from "../components/BrandMarquee";
 import DestinationsSection from "../components/DestinationsSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import TripPlannerSection from "../components/TripPlannerSection";
@@ -49,10 +50,14 @@ const LandingPage = () => {
         onExploreDestinations={scrollToDestinations} 
       />
 
+      {/* Infinite Tech & Partners Marquee */}
+      <BrandMarquee />
+
       {/* 2. Destinations Showcase */}
       <DestinationsSection 
         onSelectDestination={handleSelectDestination} 
       />
+
 
       {/* 3. How It Works Section */}
       <HowItWorksSection 
