@@ -43,7 +43,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#07090e] text-slate-100 selection:bg-violet-500/30 selection:text-violet-200">
+    <div className="flex flex-col min-h-screen bg-[#181b22] text-[#EAEAEA] selection:bg-[#FF2E63]/30 selection:text-[#FF2E63]">
       {/* 1. Hero Section */}
       <HeroSection 
         onStartPlanning={scrollToPlanner} 
@@ -57,7 +57,6 @@ const LandingPage = () => {
       <DestinationsSection 
         onSelectDestination={handleSelectDestination} 
       />
-
 
       {/* 3. How It Works Section */}
       <HowItWorksSection 

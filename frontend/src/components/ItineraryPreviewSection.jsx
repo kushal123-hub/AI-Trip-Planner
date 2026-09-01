@@ -25,7 +25,6 @@ import {
 import { Link } from "react-router-dom";
 import ItineraryMap from "./ItineraryMap";
 
-
 const sampleItineraries = [
   {
     id: "sample-kyoto",
@@ -218,35 +217,33 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
     }));
   };
 
-
   return (
     <section id="itinerary-preview" className="py-24 relative overflow-hidden">
       {/* Background Accent */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] bg-violet-600/10 rounded-full blur-[140px] -z-10" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] bg-[#08D9D6]/10 rounded-full blur-[140px] -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-xs font-semibold backdrop-blur-md mb-3">
-            <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#08D9D6]/30 bg-[#08D9D6]/10 text-[#08D9D6] text-xs font-semibold backdrop-blur-md mb-3">
+            <Sparkles className="h-3.5 w-3.5 text-[#08D9D6]" />
             <span>{activeItineraryData ? "Your Live AI Generated Dossier" : "Interactive Dossier Showcase"}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Intelligent Itinerary</span> Experience
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#EAEAEA] tracking-tight">
+            Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#08D9D6] to-[#FF2E63]">Intelligent Itinerary</span> Experience
           </h2>
           <p className="mt-3 text-sm sm:text-base text-slate-400">
             {activeItineraryData 
               ? "Here is your bespoke itinerary created by our AI Travel Engine! View the breakdown, day-by-day roadmap, stays, and packing list."
               : "Experience how our AI structures multi-day travel with paced activities, verified hotels, dining, and smart financial breakdown."}
           </p>
-
         </div>
 
-        {/* If showing sample, provide switcher tabs and map toggle */}
+        {/* Switcher tabs and map toggle */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           {!activeItineraryData ? (
-            <div className="inline-flex rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl">
+            <div className="inline-flex rounded-2xl border border-white/10 bg-[#252A34]/80 p-1.5 backdrop-blur-xl">
               {sampleItineraries.map((sample, idx) => (
                 <button
                   key={sample.id}
@@ -257,7 +254,7 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
                   }}
                   className={`px-5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
                     selectedSampleIndex === idx
-                      ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
+                      ? "bg-[#FF2E63] text-white shadow-lg shadow-[#FF2E63]/30"
                       : "text-slate-400 hover:text-white"
                   }`}
                 >
@@ -273,11 +270,11 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
             onClick={() => setShowMap(!showMap)}
             className={`px-4 py-2.5 rounded-2xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
               showMap
-                ? "bg-violet-600/20 border-violet-500/40 text-violet-300 shadow-md shadow-violet-600/20"
+                ? "bg-[#08D9D6]/20 border-[#08D9D6]/40 text-[#08D9D6] shadow-md shadow-[#08D9D6]/20"
                 : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
             }`}
           >
-            <MapIcon className="h-4 w-4 text-violet-400" />
+            <MapIcon className="h-4 w-4 text-[#08D9D6]" />
             <span>{showMap ? "Hide Interactive Route Map" : "Show Interactive Route Map"}</span>
           </button>
         </div>
@@ -293,19 +290,18 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
         )}
 
         {/* Main Dossier Card */}
-        <div className="rounded-3xl border border-white/15 bg-slate-900/80 shadow-2xl backdrop-blur-2xl overflow-hidden">
+        <div className="rounded-3xl border border-white/15 bg-[#252A34]/85 shadow-2xl backdrop-blur-2xl overflow-hidden">
 
-          
           {/* Trip Header Banner */}
-          <div className="p-6 sm:p-8 bg-gradient-to-r from-violet-950/80 via-slate-900 to-slate-950 border-b border-white/10">
+          <div className="p-6 sm:p-8 bg-gradient-to-r from-[#252A34] via-[#1f232b] to-[#181b22] border-b border-white/10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/30 uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#08D9D6]/15 text-[#08D9D6] border border-[#08D9D6]/30 uppercase tracking-wider">
                     {displayData.style}
                   </span>
                   <span className="text-xs text-slate-400 flex items-center gap-1">
-                    <Calendar className="h-3 w-3 text-cyan-400" />
+                    <Calendar className="h-3 w-3 text-[#08D9D6]" />
                     {displayData.dates}
                   </span>
                 </div>
@@ -318,9 +314,9 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
               </div>
 
               {/* Total Budget Pill */}
-              <div className="flex flex-col md:items-end justify-center rounded-2xl bg-white/5 border border-white/10 p-4 sm:px-6">
+              <div className="flex flex-col md:items-end justify-center rounded-2xl bg-[#181b22]/70 border border-white/10 p-4 sm:px-6">
                 <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Max Budget</span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400">
+                <span className="text-2xl sm:text-3xl font-black text-[#08D9D6]">
                   ₹{displayData.budget?.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -334,7 +330,7 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
             <div className="lg:col-span-8 space-y-6">
               <div className="flex items-center justify-between">
                 <h4 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Compass className="h-5 w-5 text-violet-400" />
+                  <Compass className="h-5 w-5 text-[#08D9D6]" />
                   <span>Day-by-Day Itinerary Roadmap</span>
                 </h4>
                 <span className="text-xs text-slate-400 font-medium">
@@ -349,18 +345,18 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
                   return (
                     <div
                       key={day.day}
-                      className="rounded-2xl border border-white/10 bg-slate-950/60 overflow-hidden transition-all duration-200"
+                      className="rounded-2xl border border-white/10 bg-[#181b22]/70 overflow-hidden transition-all duration-200"
                     >
                       <button
                         onClick={() => setExpandedDay(isExpanded ? null : day.day)}
                         className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/5 transition"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-xs font-bold text-violet-300">
+                          <div className="h-8 w-8 rounded-xl bg-[#08D9D6]/15 border border-[#08D9D6]/30 flex items-center justify-center text-xs font-bold text-[#08D9D6]">
                             D{day.day}
                           </div>
                           <div>
-                            <span className="text-xs font-semibold text-violet-400">Day {day.day}</span>
+                            <span className="text-xs font-semibold text-[#08D9D6]">Day {day.day}</span>
                             <h5 className="text-sm font-bold text-white">{day.title}</h5>
                           </div>
                         </div>
@@ -381,7 +377,7 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
                           >
                             {day.activities?.map((activity, aIdx) => (
                               <div key={aIdx} className="flex items-start gap-2.5 text-xs text-slate-300">
-                                <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0 mt-0.5" />
+                                <CheckCircle2 className="h-4 w-4 text-[#08D9D6] shrink-0 mt-0.5" />
                                 <span className="leading-relaxed">{activity}</span>
                               </div>
                             ))}
@@ -395,15 +391,15 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
 
               {/* Local Travel Tips */}
               {displayData.travel_tips && displayData.travel_tips.length > 0 && (
-                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5">
-                  <h5 className="text-xs font-bold text-cyan-300 flex items-center gap-1.5 uppercase tracking-wider mb-3">
-                    <Info className="h-4 w-4 text-cyan-400" />
+                <div className="rounded-2xl border border-[#08D9D6]/30 bg-[#08D9D6]/5 p-5">
+                  <h5 className="text-xs font-bold text-[#08D9D6] flex items-center gap-1.5 uppercase tracking-wider mb-3">
+                    <Info className="h-4 w-4 text-[#08D9D6]" />
                     <span>Insider Local Travel Advice</span>
                   </h5>
                   <div className="space-y-2">
                     {displayData.travel_tips.map((tip, tIdx) => (
                       <p key={tIdx} className="text-xs text-slate-300 leading-relaxed flex items-start gap-2">
-                        <span className="text-cyan-400 font-bold">•</span>
+                        <span className="text-[#08D9D6] font-bold">•</span>
                         <span>{tip}</span>
                       </p>
                     ))}
@@ -416,21 +412,21 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
             <div className="lg:col-span-4 space-y-6">
               
               {/* Budget Breakdown Card */}
-              <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-5 space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-[#181b22]/70 p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-                    <Wallet className="h-4 w-4 text-emerald-400" />
+                    <Wallet className="h-4 w-4 text-[#08D9D6]" />
                     <span>Estimated Budget Breakdown</span>
                   </h4>
                 </div>
 
                 <div className="space-y-3">
                   {[
-                    { label: "Accommodation", value: hotelCost, color: "bg-violet-500", text: "text-violet-400" },
-                    { label: "Food & Gastronomy", value: foodCost, color: "bg-cyan-400", text: "text-cyan-400" },
+                    { label: "Accommodation", value: hotelCost, color: "bg-[#08D9D6]", text: "text-[#08D9D6]" },
+                    { label: "Food & Gastronomy", value: foodCost, color: "bg-[#FF2E63]", text: "text-[#FF2E63]" },
                     { label: "Transportation", value: transportCost, color: "bg-amber-400", text: "text-amber-400" },
                     { label: "Activities & Sightseeing", value: activitiesCost, color: "bg-emerald-400", text: "text-emerald-400" },
-                    { label: "Miscellaneous", value: miscCost, color: "bg-pink-400", text: "text-pink-400" },
+                    { label: "Miscellaneous", value: miscCost, color: "bg-[#08D9D6]/70", text: "text-[#08D9D6]" },
                   ].map((item) => {
                     const percentage = totalAllocated > 0 ? (item.value / totalAllocated) * 100 : 0;
                     return (
@@ -449,23 +445,23 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
 
                 <div className="pt-3 border-t border-white/10 flex justify-between items-center text-xs">
                   <span className="text-slate-400 font-semibold">Total Projected Cost:</span>
-                  <span className="font-bold text-sm text-emerald-400">
+                  <span className="font-bold text-sm text-[#08D9D6]">
                     ₹{totalAllocated.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
 
               {/* Recommended Hotels & Restaurants */}
-              <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-5 space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-[#181b22]/70 p-5 space-y-4">
                 <div>
-                  <h5 className="text-xs font-bold text-violet-400 flex items-center gap-1.5 uppercase tracking-wider mb-2.5">
+                  <h5 className="text-xs font-bold text-[#08D9D6] flex items-center gap-1.5 uppercase tracking-wider mb-2.5">
                     <Hotel className="h-4 w-4" />
                     <span>Curated Stays</span>
                   </h5>
                   <div className="space-y-1.5">
                     {displayData.recommended_hotels?.map((hotel, hIdx) => (
                       <div key={hIdx} className="text-xs text-slate-300 flex items-start gap-2 bg-white/5 p-2 rounded-xl">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-violet-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-3.5 w-3.5 text-[#08D9D6] shrink-0 mt-0.5" />
                         <span className="font-medium">{hotel}</span>
                       </div>
                     ))}
@@ -473,14 +469,14 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
                 </div>
 
                 <div className="pt-3 border-t border-white/10">
-                  <h5 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 uppercase tracking-wider mb-2.5">
+                  <h5 className="text-xs font-bold text-[#FF2E63] flex items-center gap-1.5 uppercase tracking-wider mb-2.5">
                     <Utensils className="h-4 w-4" />
                     <span>Must-Try Dining</span>
                   </h5>
                   <div className="space-y-1.5">
                     {displayData.recommended_restaurants?.map((rest, rIdx) => (
                       <div key={rIdx} className="text-xs text-slate-300 flex items-start gap-2 bg-white/5 p-2 rounded-xl">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-3.5 w-3.5 text-[#FF2E63] shrink-0 mt-0.5" />
                         <span className="font-medium">{rest}</span>
                       </div>
                     ))}
@@ -489,8 +485,8 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
               </div>
 
               {/* Interactive Packing Checklist */}
-              <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-5 space-y-3">
-                <h5 className="text-xs font-bold text-pink-400 flex items-center gap-1.5 uppercase tracking-wider">
+              <div className="rounded-2xl border border-white/10 bg-[#181b22]/70 p-5 space-y-3">
+                <h5 className="text-xs font-bold text-[#08D9D6] flex items-center gap-1.5 uppercase tracking-wider">
                   <CheckSquare className="h-4 w-4" />
                   <span>Packing Checklist ({Object.values(checkedItems).filter(Boolean).length}/{displayData.packing_list?.length || 0})</span>
                 </h5>
@@ -521,7 +517,7 @@ const ItineraryPreviewSection = ({ activeItineraryData, onSelectDestination }) =
               {activeItineraryData && (
                 <Link
                   to={`/itinerary/${activeItineraryData.trip.id}`}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 transition"
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FF2E63] to-[#ff5782] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#FF2E63]/30 hover:shadow-[#FF2E63]/50 transition"
                 >
                   <span>Open Full Screen Dossier</span>
                   <ExternalLink className="h-4 w-4" />

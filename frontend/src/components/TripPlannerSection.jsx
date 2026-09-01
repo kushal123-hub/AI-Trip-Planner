@@ -27,14 +27,14 @@ import { useAuth } from "../context/AuthContext";
 import AIGenerationLoader from "./AIGenerationLoader";
 
 const travelStyleOptions = [
-  { label: "Cultural & Heritage", value: "Cultural", icon: Compass, desc: "Temples, museums, traditions", gradient: "from-purple-500/20 to-indigo-500/20", border: "border-purple-500/30" },
-  { label: "Adventure & Thrill", value: "Adventure", icon: Mountain, desc: "Treks, trails, outdoor thrill", gradient: "from-cyan-500/20 to-blue-500/20", border: "border-cyan-500/30" },
-  { label: "Relaxation & Spa", value: "Relaxing", icon: Palmtree, desc: "Beaches, resorts & wellness", gradient: "from-emerald-500/20 to-teal-500/20", border: "border-emerald-500/30" },
-  { label: "Romantic Escape", value: "Romantic", icon: Heart, desc: "Intimate views & fine wine", gradient: "from-pink-500/20 to-rose-500/20", border: "border-pink-500/30" },
+  { label: "Cultural & Heritage", value: "Cultural", icon: Compass, desc: "Temples, museums, traditions", gradient: "from-[#08D9D6]/20 to-[#06a8a6]/20", border: "border-[#08D9D6]/30" },
+  { label: "Adventure & Thrill", value: "Adventure", icon: Mountain, desc: "Treks, trails, outdoor thrill", gradient: "from-[#FF2E63]/20 to-[#d91b4c]/20", border: "border-[#FF2E63]/30" },
+  { label: "Relaxation & Spa", value: "Relaxing", icon: Palmtree, desc: "Beaches, resorts & wellness", gradient: "from-[#08D9D6]/20 to-[#06a8a6]/20", border: "border-[#08D9D6]/30" },
+  { label: "Romantic Escape", value: "Romantic", icon: Heart, desc: "Intimate views & fine wine", gradient: "from-[#FF2E63]/20 to-[#ff6b8f]/20", border: "border-[#FF2E63]/30" },
   { label: "Gastronomic Foodie", value: "Foodie", icon: Utensils, desc: "Street stalls, Michelin stars", gradient: "from-amber-500/20 to-orange-500/20", border: "border-amber-500/30" },
   { label: "Luxury & VIP", value: "Luxury", icon: Crown, desc: "5-star retreats & chauffeur", gradient: "from-yellow-500/20 to-amber-500/20", border: "border-yellow-500/30" },
   { label: "Family Friendly", value: "Family", icon: Users, desc: "Safe, engaging & paced", gradient: "from-blue-500/20 to-indigo-500/20", border: "border-blue-500/30" },
-  { label: "Smart Budget", value: "Budget", icon: PiggyBank, desc: "Hostels & authentic value", gradient: "from-teal-500/20 to-emerald-500/20", border: "border-teal-500/30" },
+  { label: "Smart Budget", value: "Budget", icon: PiggyBank, desc: "Hostels & authentic value", gradient: "from-emerald-500/20 to-teal-500/20", border: "border-emerald-500/30" },
 ];
 
 const popularInterests = [
@@ -190,13 +190,13 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
         travel_style: travelStyle || "General",
       });
 
-      // Celebration confetti!
+      // Celebration confetti
       try {
         confetti({
           particleCount: 90,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ["#8b5cf6", "#06b6d4", "#f59e0b", "#10b981", "#ec4899"],
+          colors: ["#08D9D6", "#FF2E63", "#EAEAEA", "#252A34"],
         });
       } catch (e) {
         // ignore
@@ -243,35 +243,34 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
   return (
     <section id="planner" className="py-24 relative overflow-hidden">
       {/* Background Orbs */}
-      <div className="pointer-events-none absolute top-10 right-10 w-[500px] h-[500px] bg-violet-600/15 rounded-full blur-[140px] -z-10 animate-pulse-glow" />
-      <div className="pointer-events-none absolute bottom-10 left-10 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[140px] -z-10 animate-float-slow" />
+      <div className="pointer-events-none absolute top-10 right-10 w-[500px] h-[500px] bg-[#08D9D6]/15 rounded-full blur-[140px] -z-10 animate-pulse-glow" />
+      <div className="pointer-events-none absolute bottom-10 left-10 w-[500px] h-[500px] bg-[#FF2E63]/15 rounded-full blur-[140px] -z-10 animate-float-slow" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Title */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-3 shadow-sm shadow-violet-500/20">
-            <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#08D9D6]/30 bg-[#08D9D6]/10 text-[#08D9D6] text-xs font-semibold backdrop-blur-md mb-3 shadow-sm shadow-[#08D9D6]/20">
+            <Sparkles className="h-3.5 w-3.5 text-[#08D9D6]" />
             <span>Interactive AI Generator</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-400">Custom Itinerary</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#EAEAEA] tracking-tight">
+            Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#08D9D6] to-[#FF2E63]">Custom Itinerary</span>
           </h2>
           <p className="mt-2 text-sm sm:text-base text-slate-400">
             Tell us your destination, dates, and budget. Our intelligent travel engine builds a complete trip in seconds.
           </p>
-
         </div>
 
         {/* Wizard Card Container */}
-        <div className="rounded-3xl border border-white/15 bg-slate-900/85 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative">
+        <div className="rounded-3xl border border-white/15 bg-[#252A34]/85 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative">
           
           {/* Step Indicator Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between relative">
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-800 -translate-y-1/2 -z-10" />
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#181b22] -translate-y-1/2 -z-10" />
               <div 
-                className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400 -translate-y-1/2 -z-10 transition-all duration-300 shadow-sm shadow-violet-500"
+                className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-[#08D9D6] via-[#FF2E63] to-[#08D9D6] -translate-y-1/2 -z-10 transition-all duration-300 shadow-sm shadow-[#08D9D6]"
                 style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
               />
 
@@ -284,7 +283,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                 const isCurrent = currentStep === s.num;
 
                 return (
-                  <div key={s.num} className="flex flex-col items-center gap-1.5 bg-slate-900 px-2 sm:px-4">
+                  <div key={s.num} className="flex flex-col items-center gap-1.5 bg-[#252A34] px-2 sm:px-4">
                     <button
                       type="button"
                       onClick={() => {
@@ -292,15 +291,15 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       }}
                       className={`flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                         isCompleted
-                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+                          ? "bg-[#08D9D6] text-[#252A34] shadow-lg shadow-[#08D9D6]/30 font-extrabold"
                           : isCurrent
-                          ? "bg-gradient-to-tr from-violet-600 to-cyan-500 text-white shadow-lg shadow-violet-500/40 scale-110 ring-2 ring-violet-400/50"
-                          : "border border-white/10 bg-slate-800 text-slate-400"
+                          ? "bg-gradient-to-tr from-[#FF2E63] to-[#ff5782] text-white shadow-lg shadow-[#FF2E63]/40 scale-110 ring-2 ring-[#FF2E63]/50"
+                          : "border border-white/10 bg-[#181b22] text-slate-400"
                       }`}
                     >
-                      {isCompleted ? <Check className="h-4 w-4" /> : s.num}
+                      {isCompleted ? <Check className="h-4 w-4 stroke-[3]" /> : s.num}
                     </button>
-                    <span className={`text-[11px] font-semibold hidden sm:block ${isCurrent ? "text-white" : "text-slate-400"}`}>
+                    <span className={`text-[11px] font-semibold hidden sm:block ${isCurrent ? "text-[#EAEAEA]" : "text-slate-400"}`}>
                       {s.label}
                     </span>
                   </div>
@@ -334,14 +333,14 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                   Where would you like to travel?
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-violet-400" />
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#08D9D6]" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Kyoto, Japan or Amalfi Coast, Italy"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800 focus:ring-2 focus:ring-violet-500/25"
+                    className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3.5 pl-12 pr-4 text-sm text-[#EAEAEA] placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22] focus:ring-2 focus:ring-[#08D9D6]/25"
                   />
                 </div>
 
@@ -353,7 +352,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       key={city}
                       type="button"
                       onClick={() => setDestination(city)}
-                      className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 transition cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-[#08D9D6]/10 text-slate-300 hover:text-[#08D9D6] border border-white/5 transition cursor-pointer"
                     >
                       {city}
                     </button>
@@ -374,7 +373,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       required
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                      className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-11 pr-4 text-sm text-[#EAEAEA] outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
                     />
                   </div>
                 </div>
@@ -390,7 +389,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       required
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                      className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-11 pr-4 text-sm text-[#EAEAEA] outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
                     />
                   </div>
                 </div>
@@ -398,12 +397,12 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
 
               {/* Duration Live Calculation Pill */}
               {tripDurationDays > 0 && (
-                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-3 flex items-center justify-between text-xs text-cyan-300">
+                <div className="rounded-2xl border border-[#08D9D6]/30 bg-[#08D9D6]/10 p-3 flex items-center justify-between text-xs text-[#08D9D6]">
                   <span className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-cyan-400" />
+                    <Clock className="h-4 w-4 text-[#08D9D6]" />
                     <span>Calculated Length:</span>
                   </span>
-                  <span className="font-bold text-white bg-cyan-500/20 px-2.5 py-0.5 rounded-lg border border-cyan-500/30">
+                  <span className="font-bold text-white bg-[#08D9D6]/20 px-2.5 py-0.5 rounded-lg border border-[#08D9D6]/30">
                     {tripDurationDays} Days / {Math.max(tripDurationDays - 1, 1)} Nights
                   </span>
                 </div>
@@ -425,13 +424,13 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
                     Total Trip Budget (INR)
                   </label>
-                  <span className="text-sm font-extrabold text-emerald-400">
+                  <span className="text-sm font-extrabold text-[#08D9D6]">
                     ₹{parseFloat(budget || 0).toLocaleString("en-IN")}
                   </span>
                 </div>
 
                 <div className="relative mb-3">
-                  <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-400" />
+                  <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#08D9D6]" />
                   <input
                     type="number"
                     min="1000"
@@ -440,7 +439,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                     placeholder="65000"
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-800/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                    className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3.5 pl-12 pr-4 text-sm text-[#EAEAEA] placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
                   />
                 </div>
 
@@ -453,7 +452,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                       onClick={() => setBudget(preset.value.toString())}
                       className={`py-2 px-3 rounded-xl text-xs font-semibold transition border cursor-pointer ${
                         budget === preset.value.toString()
-                          ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/20"
+                          ? "bg-[#08D9D6]/20 border-[#08D9D6] text-[#08D9D6] shadow-md shadow-[#08D9D6]/20"
                           : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10"
                       }`}
                     >
@@ -481,15 +480,15 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                         onClick={() => setTravelStyle(style.value)}
                         className={`p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                           isSelected
-                            ? `bg-gradient-to-br ${style.gradient} border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.03]`
-                            : "border-white/10 bg-slate-800/40 hover:bg-slate-800/80 hover:border-white/20"
+                            ? `bg-gradient-to-br ${style.gradient} border-[#08D9D6] shadow-lg shadow-[#08D9D6]/20 scale-[1.03]`
+                            : "border-white/10 bg-[#181b22]/50 hover:bg-[#181b22]/90 hover:border-white/20"
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <div className={`p-2 rounded-xl ${isSelected ? "bg-violet-600 text-white" : "bg-white/5 text-slate-400"}`}>
+                          <div className={`p-2 rounded-xl ${isSelected ? "bg-[#08D9D6] text-[#252A34]" : "bg-white/5 text-slate-400"}`}>
                             <StyleIcon className="h-4 w-4" />
                           </div>
-                          {isSelected && <Check className="h-4 w-4 text-violet-400" />}
+                          {isSelected && <Check className="h-4 w-4 text-[#08D9D6] stroke-[3]" />}
                         </div>
                         <div>
                           <p className="text-xs font-bold text-white">{style.label}</p>
@@ -525,7 +524,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                         onClick={() => toggleInterest(interest)}
                         className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/30 scale-105 border border-violet-400/40"
+                            ? "bg-gradient-to-r from-[#FF2E63] to-[#ff5782] text-white shadow-md shadow-[#FF2E63]/30 scale-105 border border-[#FF2E63]/40"
                             : "bg-white/5 border border-white/5 text-slate-300 hover:bg-white/10 hover:border-white/15"
                         }`}
                       >
@@ -551,12 +550,12 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") addCustomInterest(e);
                     }}
-                    className="flex-1 rounded-2xl border border-white/10 bg-slate-800/70 py-3 px-4 text-xs text-white placeholder-slate-500 outline-none focus:border-violet-500"
+                    className="flex-1 rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 px-4 text-xs text-[#EAEAEA] placeholder-slate-500 outline-none focus:border-[#08D9D6]"
                   />
                   <button
                     type="button"
                     onClick={addCustomInterest}
-                    className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition cursor-pointer"
+                    className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-[#08D9D6]/20 hover:text-[#08D9D6] text-xs font-semibold text-white border border-white/10 transition cursor-pointer"
                   >
                     Add
                   </button>
@@ -564,7 +563,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
               </div>
 
               {/* Review Snapshot */}
-              <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 text-xs text-slate-300 space-y-1">
+              <div className="rounded-2xl border border-white/10 bg-[#181b22]/70 p-4 text-xs text-slate-300 space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Destination:</span>
                   <span className="font-bold text-white">{destination || "Not set"}</span>
@@ -575,11 +574,11 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Budget:</span>
-                  <span className="font-bold text-emerald-400">₹{parseFloat(budget || 0).toLocaleString("en-IN")}</span>
+                  <span className="font-bold text-[#08D9D6]">₹{parseFloat(budget || 0).toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Style:</span>
-                  <span className="text-violet-300 font-semibold">{travelStyle}</span>
+                  <span className="text-[#FF2E63] font-semibold">{travelStyle}</span>
                 </div>
               </div>
             </motion.div>
@@ -604,7 +603,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="px-6 py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs transition flex items-center gap-2 shadow-lg shadow-violet-600/30 cursor-pointer"
+                className="px-6 py-3 rounded-2xl bg-[#08D9D6] hover:bg-[#06b8b5] text-[#252A34] font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-[#08D9D6]/30 cursor-pointer"
               >
                 <span>Continue</span>
                 <ArrowRight className="h-4 w-4" />
@@ -613,7 +612,7 @@ const TripPlannerSection = ({ preloadedData, onItineraryGenerated }) => {
               <button
                 type="button"
                 onClick={handleGenerate}
-                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 text-white font-bold text-sm shadow-xl shadow-violet-600/40 hover:shadow-violet-600/60 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer animate-shimmer"
+                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF2E63] via-[#ff4777] to-[#FF2E63] text-white font-bold text-sm shadow-xl shadow-[#FF2E63]/40 hover:shadow-[#FF2E63]/60 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer animate-shimmer"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>Generate Itinerary with AI</span>

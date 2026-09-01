@@ -115,7 +115,6 @@ const CreateTrip = () => {
       });
 
       const tripId = response.data.id;
-      // Navigate to Itinerary view which handles instant generation if missing
       navigate(`/itinerary/${tripId}`);
     } catch (err) {
       setError(
@@ -132,25 +131,25 @@ const CreateTrip = () => {
       {/* Back button */}
       <button
         onClick={() => navigate("/dashboard")}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-[#08D9D6] mb-6 transition cursor-pointer"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         <span>Back to Dashboard</span>
       </button>
 
-      <div className="rounded-3xl border border-white/15 bg-slate-900/80 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative overflow-hidden">
+      <div className="rounded-3xl border border-white/15 bg-[#252A34]/85 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl relative overflow-hidden">
         
         {/* Ambient Glows */}
-        <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-violet-600/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-cyan-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#08D9D6]/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#FF2E63]/15 blur-3xl" />
 
         {/* Header */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-semibold backdrop-blur-md mb-3">
-            <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#08D9D6]/30 bg-[#08D9D6]/10 text-[#08D9D6] text-xs font-semibold backdrop-blur-md mb-3">
+            <Sparkles className="h-3.5 w-3.5 text-[#08D9D6]" />
             <span>AI Itinerary Architect</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#EAEAEA] tracking-tight">
             Plan Your Next Destination
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-400">
@@ -173,14 +172,14 @@ const CreateTrip = () => {
               Where do you want to go?
             </label>
             <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-violet-400" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#08D9D6]" />
               <input
                 type="text"
                 required
                 placeholder="e.g. Paris, Kyoto, Goa, Swiss Alps..."
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
             </div>
           </div>
@@ -198,7 +197,7 @@ const CreateTrip = () => {
                   required
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                  className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
                 />
               </div>
             </div>
@@ -214,7 +213,7 @@ const CreateTrip = () => {
                   required
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                  className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
                 />
               </div>
             </div>
@@ -226,13 +225,13 @@ const CreateTrip = () => {
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 Total Budget (INR)
               </label>
-              <span className="text-xs font-bold text-emerald-400">
+              <span className="text-xs font-bold text-[#08D9D6]">
                 ₹{parseFloat(budget || 0).toLocaleString("en-IN")}
               </span>
             </div>
 
             <div className="relative mb-3">
-              <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-400" />
+              <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#08D9D6]" />
               <input
                 type="number"
                 min="1000"
@@ -241,7 +240,7 @@ const CreateTrip = () => {
                 placeholder="50000"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
             </div>
 
@@ -251,9 +250,9 @@ const CreateTrip = () => {
                   key={preset.value}
                   type="button"
                   onClick={() => setBudget(preset.value.toString())}
-                  className={`py-2 px-3 rounded-xl text-xs font-semibold transition border ${
+                  className={`py-2 px-3 rounded-xl text-xs font-semibold transition border cursor-pointer ${
                     budget === preset.value.toString()
-                      ? "bg-emerald-500/20 border-emerald-500 text-emerald-300"
+                      ? "bg-[#08D9D6]/20 border-[#08D9D6] text-[#08D9D6]"
                       : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10"
                   }`}
                 >
@@ -277,14 +276,14 @@ const CreateTrip = () => {
                     key={style.value}
                     type="button"
                     onClick={() => setTravelStyle(style.value)}
-                    className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-200 ${
+                    className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                       isSelected
-                        ? "bg-gradient-to-b from-violet-600/30 to-purple-600/20 border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.02]"
-                        : "bg-slate-800/40 border-white/5 hover:border-white/15 hover:bg-slate-800/70"
+                        ? "bg-[#08D9D6]/15 border-[#08D9D6] shadow-lg shadow-[#08D9D6]/20 scale-[1.02]"
+                        : "bg-[#181b22]/50 border-white/5 hover:border-white/15 hover:bg-[#181b22]/80"
                     }`}
                   >
                     <div className={`h-8 w-8 rounded-xl flex items-center justify-center mb-2 ${
-                      isSelected ? "bg-violet-600 text-white" : "bg-white/10 text-slate-300"
+                      isSelected ? "bg-[#08D9D6] text-[#252A34]" : "bg-white/10 text-slate-300"
                     }`}>
                       <StyleIcon className="h-4 w-4" />
                     </div>
@@ -311,9 +310,9 @@ const CreateTrip = () => {
                     key={interest}
                     type="button"
                     onClick={() => toggleInterest(interest)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 border flex items-center gap-1.5 ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 border flex items-center gap-1.5 cursor-pointer ${
                       isSelected
-                        ? "bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/25"
+                        ? "bg-gradient-to-r from-[#FF2E63] to-[#ff5782] text-white border-[#FF2E63] shadow-md shadow-[#FF2E63]/25"
                         : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white"
                     }`}
                   >
@@ -336,12 +335,12 @@ const CreateTrip = () => {
                     addCustomInterest(e);
                   }
                 }}
-                className="flex-1 rounded-2xl border border-white/10 bg-slate-800/60 px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="flex-1 rounded-2xl border border-white/10 bg-[#181b22]/70 px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
               <button
                 type="button"
                 onClick={addCustomInterest}
-                className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition"
+                className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-[#08D9D6]/20 hover:text-[#08D9D6] text-xs font-semibold text-white border border-white/10 transition cursor-pointer"
               >
                 Add
               </button>
@@ -353,7 +352,7 @@ const CreateTrip = () => {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 text-white font-bold text-sm shadow-xl shadow-violet-600/40 hover:shadow-violet-600/60 hover:scale-[1.02] active:scale-[0.98] transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF2E63] via-[#ff4777] to-[#FF2E63] text-white font-bold text-sm shadow-xl shadow-[#FF2E63]/40 hover:shadow-[#FF2E63]/60 hover:scale-[1.02] active:scale-[0.98] transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -369,7 +368,7 @@ const CreateTrip = () => {
             <button
               type="button"
               onClick={() => navigate("/dashboard")}
-              className="px-5 py-3.5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-semibold transition"
+              className="px-5 py-3.5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-semibold transition cursor-pointer"
             >
               Cancel
             </button>

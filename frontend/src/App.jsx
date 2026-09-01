@@ -15,7 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col selection:bg-violet-500/30 selection:text-violet-200">
+      <div className="min-h-screen bg-[#181b22] text-[#EAEAEA] flex flex-col selection:bg-[#FF2E63]/30 selection:text-[#FF2E63]">
         {/* Global Floating Navigation Bar */}
         <Navbar />
 

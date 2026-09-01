@@ -121,20 +121,20 @@ const DestinationsSection = ({ onSelectDestination }) => {
   return (
     <section id="destinations" className="py-24 relative overflow-hidden">
       {/* Background radial accent */}
-      <div className="pointer-events-none absolute top-1/2 left-0 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl -z-10" />
-      <div className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl -z-10" />
+      <div className="pointer-events-none absolute top-1/2 left-0 w-96 h-96 bg-[#08D9D6]/10 rounded-full blur-3xl -z-10" />
+      <div className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-[#FF2E63]/10 rounded-full blur-3xl -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-xs font-semibold backdrop-blur-md mb-3">
-              <Compass className="h-3.5 w-3.5 text-cyan-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#08D9D6]/30 bg-[#08D9D6]/10 text-[#08D9D6] text-xs font-semibold backdrop-blur-md mb-3">
+              <Compass className="h-3.5 w-3.5 text-[#08D9D6]" />
               <span>Curated Inspiration</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Trending <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Dream Destinations</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#EAEAEA] tracking-tight">
+              Trending <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#08D9D6] to-[#FF2E63]">Dream Destinations</span>
             </h2>
             <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-xl">
               Tap any hotspot to pre-load our AI Planner with tailored itineraries, curated stays, and optimal budget models.
@@ -149,8 +149,8 @@ const DestinationsSection = ({ onSelectDestination }) => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   selectedCategory === cat
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30 scale-105"
-                    : "bg-slate-900/80 text-slate-400 border border-white/10 hover:text-white hover:bg-white/5"
+                    ? "bg-[#FF2E63] text-white shadow-lg shadow-[#FF2E63]/30 scale-105"
+                    : "bg-[#252A34]/80 text-slate-400 border border-white/10 hover:text-white hover:bg-white/5"
                 }`}
               >
                 {cat}
@@ -173,7 +173,7 @@ const DestinationsSection = ({ onSelectDestination }) => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
                 key={dest.id}
-                className="group relative rounded-3xl overflow-hidden border border-white/10 bg-slate-900/60 backdrop-blur-xl transition-all duration-300 hover:border-violet-500/40 hover:shadow-2xl hover:shadow-violet-600/20 hover:-translate-y-1.5 flex flex-col justify-between"
+                className="group relative rounded-3xl overflow-hidden border border-white/10 bg-[#252A34]/70 backdrop-blur-xl transition-all duration-300 hover:border-[#08D9D6]/40 hover:shadow-2xl hover:shadow-[#08D9D6]/20 hover:-translate-y-1.5 flex flex-col justify-between"
               >
                 {/* Image & Badges */}
                 <div className="relative h-52 w-full overflow-hidden">
@@ -183,7 +183,7 @@ const DestinationsSection = ({ onSelectDestination }) => {
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#181b22] via-[#181b22]/40 to-transparent" />
                   
                   {/* Tag */}
                   <div className="absolute top-3 left-3">
@@ -193,7 +193,7 @@ const DestinationsSection = ({ onSelectDestination }) => {
                   </div>
 
                   {/* Rating */}
-                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-900/80 border border-white/15 text-[11px] font-semibold text-amber-300 backdrop-blur-md">
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#252A34]/80 border border-white/15 text-[11px] font-semibold text-amber-300 backdrop-blur-md">
                     <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                     <span>{dest.rating}</span>
                   </div>
@@ -204,7 +204,7 @@ const DestinationsSection = ({ onSelectDestination }) => {
                       {dest.name}
                     </h3>
                     <p className="text-xs text-slate-300 flex items-center gap-1 mt-0.5">
-                      <MapPin className="h-3 w-3 text-violet-400" />
+                      <MapPin className="h-3 w-3 text-[#08D9D6]" />
                       {dest.country}
                     </p>
                   </div>
@@ -215,10 +215,10 @@ const DestinationsSection = ({ onSelectDestination }) => {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-cyan-400" />
+                        <Clock className="h-3.5 w-3.5 text-[#08D9D6]" />
                         {dest.duration}
                       </span>
-                      <span className="flex items-center gap-1 text-emerald-400 font-semibold">
+                      <span className="flex items-center gap-1 text-[#08D9D6] font-semibold">
                         <Wallet className="h-3.5 w-3.5" />
                         ₹{dest.estimatedBudget.toLocaleString("en-IN")}
                       </span>
@@ -231,7 +231,7 @@ const DestinationsSection = ({ onSelectDestination }) => {
                   {/* Action Button */}
                   <button
                     onClick={() => onSelectDestination(dest)}
-                    className="w-full py-2.5 rounded-xl border border-violet-500/30 bg-violet-600/10 hover:bg-violet-600 text-violet-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-md group-hover:bg-violet-600 group-hover:text-white cursor-pointer"
+                    className="w-full py-2.5 rounded-xl border border-[#FF2E63]/30 bg-[#FF2E63]/10 hover:bg-[#FF2E63] text-[#FF2E63] hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-md group-hover:bg-[#FF2E63] group-hover:text-white cursor-pointer"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     <span>Plan with AI</span>

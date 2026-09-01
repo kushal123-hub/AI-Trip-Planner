@@ -3,38 +3,34 @@ import React from "react";
 const AnimatedLogo = ({ size = "md", className = "" }) => {
   let dimension = "h-10 w-10";
   let iconSize = "h-5 w-5";
-  let ringSize = "inset-0.5";
 
   if (size === "sm") {
     dimension = "h-8 w-8";
     iconSize = "h-4 w-4";
-    ringSize = "inset-0";
   } else if (size === "lg") {
     dimension = "h-14 w-14";
     iconSize = "h-7 w-7";
-    ringSize = "inset-1";
   } else if (size === "xl") {
     dimension = "h-20 w-20";
     iconSize = "h-10 w-10";
-    ringSize = "inset-1.5";
   }
 
   return (
     <div className={`relative ${dimension} flex items-center justify-center group ${className}`}>
-      {/* Outer Rotating Conic Neon Halo */}
+      {/* Outer Rotating Conic Neon Halo with Cyan to Coral Pink */}
       <div 
-        className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-500 to-cyan-400 opacity-80 blur-[6px] group-hover:opacity-100 group-hover:blur-[10px] transition-all duration-500 animate-spin-slow"
+        className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#08D9D6] via-[#FF2E63] to-[#08D9D6] opacity-80 blur-[6px] group-hover:opacity-100 group-hover:blur-[10px] transition-all duration-500 animate-spin-slow"
       />
 
       {/* Rotating Astrolabe Border */}
-      <div className="absolute inset-0 rounded-2xl p-[1.5px] bg-gradient-to-tr from-violet-500 via-cyan-400 to-fuchsia-500 overflow-hidden">
-        <div className="w-full h-full bg-slate-950 rounded-[14px]" />
+      <div className="absolute inset-0 rounded-2xl p-[1.5px] bg-gradient-to-tr from-[#08D9D6] via-[#FF2E63] to-[#08D9D6] overflow-hidden">
+        <div className="w-full h-full bg-[#252A34] rounded-[14px]" />
       </div>
 
       {/* Inner Core Compass Emblem */}
-      <div className={`relative z-10 ${dimension} rounded-2xl bg-slate-950/90 backdrop-blur-md flex items-center justify-center border border-white/10 transition-transform duration-500 group-hover:scale-105 shadow-inner`}>
+      <div className={`relative z-10 ${dimension} rounded-2xl bg-[#252A34]/90 backdrop-blur-md flex items-center justify-center border border-white/10 transition-transform duration-500 group-hover:scale-105 shadow-inner`}>
         {/* Orbiting Celestial Dots */}
-        <div className="absolute inset-1 rounded-full border border-violet-500/20 border-dashed animate-spin-slow pointer-events-none" />
+        <div className="absolute inset-1 rounded-full border border-[#08D9D6]/30 border-dashed animate-spin-slow pointer-events-none" />
 
         {/* Dynamic Glowing Compass SVG */}
         <svg
@@ -54,22 +50,22 @@ const AnimatedLogo = ({ size = "md", className = "" }) => {
             className="animate-spin-reverse-slow origin-center"
           />
 
-          {/* North Point (Violet to Fuchsia) */}
+          {/* North Point (Radiant Pink Accent) */}
           <polygon
             points="12,3 15,12 12,10.5"
             fill="url(#logo_grad_north)"
-            className="drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]"
+            className="drop-shadow-[0_0_8px_rgba(255,46,99,0.8)]"
           />
           <polygon
             points="12,3 9,12 12,10.5"
             fill="url(#logo_grad_north_alt)"
           />
 
-          {/* South Point (Cyan to Slate) */}
+          {/* South Point (Teal / Cyan Accent) */}
           <polygon
             points="12,21 15,12 12,13.5"
             fill="url(#logo_grad_south)"
-            className="drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"
+            className="drop-shadow-[0_0_8px_rgba(8,217,214,0.8)]"
           />
           <polygon
             points="12,21 9,12 12,13.5"
@@ -77,31 +73,31 @@ const AnimatedLogo = ({ size = "md", className = "" }) => {
           />
 
           {/* Center AI Core Gem */}
-          <circle cx="12" cy="12" r="2.2" fill="#ffffff" className="animate-pulse" />
-          <circle cx="12" cy="12" r="1" fill="#8b5cf6" />
+          <circle cx="12" cy="12" r="2.2" fill="#EAEAEA" className="animate-pulse" />
+          <circle cx="12" cy="12" r="1" fill="#08D9D6" />
 
           {/* Gradients */}
           <defs>
             <linearGradient id="logo_grad_1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#8b5cf6" />
-              <stop offset="0.5" stopColor="#06b6d4" />
-              <stop offset="1" stopColor="#ec4899" />
+              <stop stopColor="#08D9D6" />
+              <stop offset="0.5" stopColor="#FF2E63" />
+              <stop offset="1" stopColor="#08D9D6" />
             </linearGradient>
             <linearGradient id="logo_grad_north" x1="12" y1="3" x2="15" y2="12" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#c084fc" />
-              <stop offset="1" stopColor="#7c3aed" />
+              <stop stopColor="#FF2E63" />
+              <stop offset="1" stopColor="#d91b4c" />
             </linearGradient>
             <linearGradient id="logo_grad_north_alt" x1="9" y1="3" x2="12" y2="12" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#e879f9" />
-              <stop offset="1" stopColor="#a855f7" />
+              <stop stopColor="#ff5782" />
+              <stop offset="1" stopColor="#FF2E63" />
             </linearGradient>
             <linearGradient id="logo_grad_south" x1="12" y1="21" x2="15" y2="12" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#38bdf8" />
-              <stop offset="1" stopColor="#0284c7" />
+              <stop stopColor="#08D9D6" />
+              <stop offset="1" stopColor="#06a8a6" />
             </linearGradient>
             <linearGradient id="logo_grad_south_alt" x1="9" y1="21" x2="12" y2="12" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#67e8f9" />
-              <stop offset="1" stopColor="#06b6d4" />
+              <stop stopColor="#5ceae8" />
+              <stop offset="1" stopColor="#08D9D6" />
             </linearGradient>
           </defs>
         </svg>

@@ -18,7 +18,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col items-center justify-center p-6 text-center">
+        <div className="min-h-screen bg-[#181b22] text-[#EAEAEA] flex flex-col items-center justify-center p-6 text-center">
           <div className="h-16 w-16 rounded-3xl bg-rose-600/20 border border-rose-500/30 text-rose-400 flex items-center justify-center mb-4">
             <Compass className="h-8 w-8 animate-spin-slow" />
           </div>
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 flex items-center gap-2 cursor-pointer"
+            className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#FF2E63] to-[#ff5782] text-white text-xs font-bold shadow-lg shadow-[#FF2E63]/30 flex items-center gap-2 cursor-pointer"
           >
             <RotateCw className="h-4 w-4" />
             <span>Reload Page</span>
@@ -36,7 +36,6 @@ class ErrorBoundary extends React.Component {
         </div>
       );
     }
-
 
     return this.props.children;
   }

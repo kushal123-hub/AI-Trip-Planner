@@ -9,7 +9,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-white/10 bg-slate-950/80 backdrop-blur-xl text-slate-400 py-12 relative">
+    <footer className="border-t border-white/10 bg-[#181b22]/95 backdrop-blur-xl text-slate-400 py-12 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           
@@ -18,7 +18,7 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <AnimatedLogo size="sm" />
               <span className="text-lg font-bold text-white tracking-tight">
-                RoamRes <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">AI</span>
+                RoamRes <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#08D9D6] to-[#FF2E63]">AI</span>
               </span>
             </div>
             <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
@@ -39,11 +39,11 @@ const Footer = () => {
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Explore</h4>
             <ul className="space-y-2 text-xs">
-              <li><a href="#destinations" className="hover:text-white transition">Curated Destinations</a></li>
-              <li><a href="#how-it-works" className="hover:text-white transition">How It Works</a></li>
-              <li><a href="#planner" className="hover:text-white transition">AI Trip Planner</a></li>
-              <li><a href="#features" className="hover:text-white transition">Features & Perks</a></li>
-              <li><a href="#itinerary-preview" className="hover:text-white transition">Itinerary Showcase</a></li>
+              <li><a href="#destinations" className="hover:text-[#08D9D6] transition">Curated Destinations</a></li>
+              <li><a href="#how-it-works" className="hover:text-[#08D9D6] transition">How It Works</a></li>
+              <li><a href="#planner" className="hover:text-[#08D9D6] transition">AI Trip Planner</a></li>
+              <li><a href="#features" className="hover:text-[#08D9D6] transition">Features & Perks</a></li>
+              <li><a href="#itinerary-preview" className="hover:text-[#08D9D6] transition">Itinerary Showcase</a></li>
             </ul>
           </div>
 
@@ -51,10 +51,10 @@ const Footer = () => {
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Account</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/dashboard" className="hover:text-white transition">User Dashboard</Link></li>
-              <li><Link to="/create-trip" className="hover:text-white transition">Plan New Trip</Link></li>
-              <li><Link to="/trip-history" className="hover:text-white transition">Trip History</Link></li>
-              <li><Link to="/login" className="hover:text-white transition">Sign In</Link></li>
+              <li><Link to="/dashboard" className="hover:text-[#08D9D6] transition">User Dashboard</Link></li>
+              <li><Link to="/create-trip" className="hover:text-[#08D9D6] transition">Plan New Trip</Link></li>
+              <li><Link to="/trip-history" className="hover:text-[#08D9D6] transition">Trip History</Link></li>
+              <li><Link to="/login" className="hover:text-[#08D9D6] transition">Sign In</Link></li>
             </ul>
           </div>
 
@@ -62,14 +62,14 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <p>© {new Date().getFullYear()} RoamRes AI. Crafted for global adventurers.</p>
+          <p>© {new Date().getFullYear()} RoamRes AI. Crafted with precision for global explorers.</p>
           
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-[#252A34]/60 hover:bg-[#252A34] text-slate-300 hover:text-[#08D9D6] transition cursor-pointer"
           >
             <span>Back to top</span>
-            <ArrowUp className="h-3.5 w-3.5 text-violet-400" />
+            <ArrowUp className="h-3.5 w-3.5 text-[#08D9D6]" />
           </button>
         </div>
       </div>

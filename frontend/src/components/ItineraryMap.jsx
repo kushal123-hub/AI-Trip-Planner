@@ -105,17 +105,17 @@ const ItineraryMap = ({ itinerary, destination }) => {
   const createIcon = (type, numberStr = "", isSelected = false) => {
     if (!L || typeof L.divIcon !== "function") return null;
 
-    let bgGradient = "linear-gradient(135deg, #a855f7 0%, #6366f1 100%)";
-    let border = "#c084fc";
-    let shadow = isSelected ? "0 0 25px #a855f7" : "0 0 14px rgba(168, 85, 247, 0.5)";
+    let bgGradient = "linear-gradient(135deg, #08D9D6 0%, #06a8a6 100%)";
+    let border = "#08D9D6";
+    let shadow = isSelected ? "0 0 25px #08D9D6" : "0 0 14px rgba(8, 217, 214, 0.5)";
     let scale = isSelected ? "scale(1.25)" : "scale(1)";
 
     if (type === "hotel") {
-      bgGradient = "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)";
-      border = "#38bdf8";
-      shadow = isSelected ? "0 0 25px #06b6d4" : "0 0 14px rgba(6, 182, 212, 0.5)";
+      bgGradient = "linear-gradient(135deg, #FF2E63 0%, #ff5782 100%)";
+      border = "#FF2E63";
+      shadow = isSelected ? "0 0 25px #FF2E63" : "0 0 14px rgba(255, 46, 99, 0.5)";
     } else if (type === "restaurant") {
-      bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)";
+      bgGradient = "linear-gradient(135deg, #f59e0b 0%, #FF2E63 100%)";
       border = "#fbbf24";
       shadow = isSelected ? "0 0 25px #f59e0b" : "0 0 14px rgba(245, 158, 11, 0.5)";
     }
@@ -154,7 +154,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
     });
   };
 
-  // Initialize Map with ESRI World Dark Gray Canvas (100% Free, NO API KEY REQUIRED, Crystal Clear)
+  // Initialize Map with ESRI World Dark Gray Canvas
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (typeof window === "undefined" || !L || typeof L.map !== "function") {
@@ -177,16 +177,16 @@ const ItineraryMap = ({ itinerary, destination }) => {
         center: cityCenter,
         zoom: 13,
         scrollWheelZoom: false,
-        zoomControl: false, // custom zoom controls
+        zoomControl: false,
       });
 
-      // 1. ESRI Dark Gray Canvas Base Tiles (Free & Keyless)
+      // 1. ESRI Dark Gray Canvas Base Tiles
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
         attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &copy; OpenStreetMap contributors',
         maxZoom: 16,
       }).addTo(map);
 
-      // 2. ESRI Dark Gray Reference Labels (High clarity street and city names)
+      // 2. ESRI Dark Gray Reference Labels
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 16,
       }).addTo(map);
@@ -228,9 +228,9 @@ const ItineraryMap = ({ itinerary, destination }) => {
         Object.entries(markersByDay).forEach(([d, markers]) => {
           if (markers.length > 1) {
             const poly = L.polyline(markers.map((m) => m.coordinates), {
-              color: "#8b5cf6",
+              color: "#08D9D6",
               weight: 3.5,
-              opacity: 0.75,
+              opacity: 0.8,
               dashArray: "6, 6",
             });
             poly.addTo(layerGroup);
@@ -240,7 +240,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
         const dayMarkers = markersByDay[activeDay] || [];
         if (dayMarkers.length > 1) {
           const poly = L.polyline(dayMarkers.map((m) => m.coordinates), {
-            color: "#a855f7",
+            color: "#FF2E63",
             weight: 4.5,
             opacity: 0.95,
           });
@@ -260,13 +260,13 @@ const ItineraryMap = ({ itinerary, destination }) => {
         popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
         popupContent.innerHTML = `
           <div class="flex items-center gap-1.5">
-            <span style="background: rgba(139, 92, 246, 0.25); color: #c084fc; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            <span style="background: rgba(8, 217, 214, 0.2); color: #08D9D6; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
               Day ${m.day} • Stop ${m.stepNumber}
             </span>
           </div>
           <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${m.placeName}</h4>
           <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${m.fullText}</p>
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #08D9D6; color: #181b22; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none;">
             Navigate in Google Maps ↗
           </a>
         `;
@@ -287,12 +287,12 @@ const ItineraryMap = ({ itinerary, destination }) => {
           const popupContent = document.createElement("div");
           popupContent.className = "p-3.5 min-w-[200px] max-w-[260px] space-y-2";
           popupContent.innerHTML = `
-            <span style="background: rgba(6, 182, 212, 0.25); color: #38bdf8; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            <span style="background: rgba(255, 46, 99, 0.2); color: #FF2E63; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">
               Accommodation
             </span>
             <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${h.placeName}</h4>
             <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${h.fullText}</p>
-            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #0891b2; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #FF2E63; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none;">
               Find on Google Maps ↗
             </a>
           `;
@@ -319,7 +319,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             </span>
             <h4 style="font-size: 13px; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0;">${r.placeName}</h4>
             <p style="font-size: 11px; color: #cbd5e1; line-height: 1.35; margin: 0;">${r.fullText}</p>
-            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #d97706; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.placeName + ", " + destination)}" target="_blank" rel="noreferrer" style="display: block; width: 100%; margin-top: 8px; padding: 6px 12px; background: #d97706; color: #ffffff; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none;">
               View on Google Maps ↗
             </a>
           `;
@@ -364,10 +364,10 @@ const ItineraryMap = ({ itinerary, destination }) => {
   }, [markersByDay, activeDay]);
 
   return (
-    <div className="rounded-3xl border border-white/15 bg-slate-900/90 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col">
+    <div className="rounded-3xl border border-white/15 bg-[#252A34]/90 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col">
       
       {/* Map Control Bar */}
-      <div className="p-4 bg-slate-950 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 bg-[#181b22] border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         
         {/* Day Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
@@ -376,7 +376,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             onClick={() => { setActiveDay("all"); setSelectedSpotId(null); }}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeDay === "all"
-                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                ? "bg-[#FF2E63] text-white shadow-md shadow-[#FF2E63]/30"
                 : "bg-white/5 text-slate-400 hover:text-white border border-white/5"
             }`}
           >
@@ -389,7 +389,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
               onClick={() => { setActiveDay(d); setSelectedSpotId(null); }}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 activeDay === d
-                  ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                  ? "bg-[#FF2E63] text-white shadow-md shadow-[#FF2E63]/30"
                   : "bg-white/5 text-slate-400 hover:text-white border border-white/5"
               }`}
             >
@@ -405,7 +405,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             onClick={() => setShowHotels(!showHotels)}
             className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer ${
               showHotels 
-                ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 shadow-sm" 
+                ? "bg-[#FF2E63]/20 border-[#FF2E63]/40 text-[#FF2E63] shadow-sm" 
                 : "bg-white/5 border-white/5 text-slate-500"
             }`}
           >
@@ -433,16 +433,16 @@ const ItineraryMap = ({ itinerary, destination }) => {
       <div className="grid grid-cols-1 lg:grid-cols-12 relative min-h-[460px]">
         
         {/* Map Viewport (8 cols) */}
-        <div className="lg:col-span-8 relative h-[380px] lg:h-[480px] w-full bg-[#12141a]">
+        <div className="lg:col-span-8 relative h-[380px] lg:h-[480px] w-full bg-[#181b22]">
           {mapError ? (
-            <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center bg-slate-950/80">
-              <Compass className="h-10 w-10 text-violet-400 mb-2 animate-pulse" />
+            <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center bg-[#181b22]">
+              <Compass className="h-10 w-10 text-[#08D9D6] mb-2 animate-pulse" />
               <p className="text-xs font-bold text-white">Route Map for {destination}</p>
             </div>
           ) : (
             <div 
               ref={mapContainerRef} 
-              className="h-full w-full relative bg-[#12141a]" 
+              className="h-full w-full relative bg-[#181b22]" 
             />
           )}
 
@@ -451,7 +451,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             <button
               type="button"
               onClick={() => mapInstanceRef.current?.zoomIn()}
-              className="h-8 w-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-white flex items-center justify-center shadow-lg transition"
+              className="h-8 w-8 rounded-xl bg-[#252A34]/90 hover:bg-[#252A34] border border-white/15 text-white flex items-center justify-center shadow-lg transition"
               title="Zoom In"
             >
               <ZoomIn className="h-4 w-4" />
@@ -459,7 +459,7 @@ const ItineraryMap = ({ itinerary, destination }) => {
             <button
               type="button"
               onClick={() => mapInstanceRef.current?.zoomOut()}
-              className="h-8 w-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-white flex items-center justify-center shadow-lg transition"
+              className="h-8 w-8 rounded-xl bg-[#252A34]/90 hover:bg-[#252A34] border border-white/15 text-white flex items-center justify-center shadow-lg transition"
               title="Zoom Out"
             >
               <ZoomOut className="h-4 w-4" />
@@ -468,11 +468,11 @@ const ItineraryMap = ({ itinerary, destination }) => {
         </div>
 
         {/* Interactive Stops Quick-Nav Panel (4 cols) */}
-        <div className="lg:col-span-4 bg-slate-950/80 border-t lg:border-t-0 lg:border-l border-white/10 p-4 flex flex-col justify-between max-h-[480px] overflow-y-auto">
+        <div className="lg:col-span-4 bg-[#181b22]/90 border-t lg:border-t-0 lg:border-l border-white/10 p-4 flex flex-col justify-between max-h-[480px] overflow-y-auto">
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Navigation className="h-3.5 w-3.5 text-violet-400" />
+                <Navigation className="h-3.5 w-3.5 text-[#08D9D6]" />
                 <span>Stops & Highlights ({currentDayActivities.length})</span>
               </span>
             </div>
@@ -487,11 +487,11 @@ const ItineraryMap = ({ itinerary, destination }) => {
                     onClick={() => handleSelectSpot(act)}
                     className={`w-full text-left p-2.5 rounded-2xl border text-xs transition cursor-pointer flex items-start gap-2.5 ${
                       isSelected
-                        ? "bg-violet-600/20 border-violet-500 text-white shadow-md shadow-violet-600/20"
+                        ? "bg-[#08D9D6]/20 border-[#08D9D6] text-white shadow-md shadow-[#08D9D6]/20"
                         : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10 hover:border-white/10"
                     }`}
                   >
-                    <div className="h-6 w-6 rounded-lg bg-violet-600/30 text-violet-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="h-6 w-6 rounded-lg bg-[#08D9D6]/30 text-[#08D9D6] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                       {act.stepNumber}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -507,8 +507,8 @@ const ItineraryMap = ({ itinerary, destination }) => {
 
           {/* Legend */}
           <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400">
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-violet-500" /> Sights</span>
-            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-cyan-400" /> Stays</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#08D9D6]" /> Sights</span>
+            <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#FF2E63]" /> Stays</span>
             <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-400" /> Dining</span>
           </div>
         </div>

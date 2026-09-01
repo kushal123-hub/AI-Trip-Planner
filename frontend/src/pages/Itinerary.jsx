@@ -29,7 +29,6 @@ import API from "../api/api";
 import AIGenerationLoader from "../components/AIGenerationLoader";
 import ItineraryMap from "../components/ItineraryMap";
 
-
 const Itinerary = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -93,7 +92,7 @@ const Itinerary = () => {
           particleCount: 80,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ["#8b5cf6", "#06b6d4", "#f59e0b", "#10b981"],
+          colors: ["#08D9D6", "#FF2E63", "#EAEAEA", "#252A34"],
         });
       } catch (e) {
         // ignore
@@ -123,7 +122,7 @@ const Itinerary = () => {
     return (
       <div className="min-h-screen pt-28 pb-12 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-3 border-violet-500 border-t-transparent" />
+          <div className="h-10 w-10 animate-spin rounded-full border-3 border-[#08D9D6] border-t-transparent" />
           <p className="text-xs text-slate-400 font-medium">Loading your itinerary dossier...</p>
         </div>
       </div>
@@ -141,13 +140,13 @@ const Itinerary = () => {
   if (!itinerary) {
     return (
       <div className="min-h-screen pt-28 pb-16 px-4 max-w-2xl mx-auto flex items-center justify-center">
-        <div className="w-full rounded-3xl border border-white/15 bg-slate-900/80 p-8 sm:p-12 text-center shadow-2xl backdrop-blur-2xl">
-          <div className="h-16 w-16 rounded-3xl bg-violet-600/20 border border-violet-500/30 text-violet-400 flex items-center justify-center mx-auto mb-4">
+        <div className="w-full rounded-3xl border border-white/15 bg-[#252A34]/85 p-8 sm:p-12 text-center shadow-2xl backdrop-blur-2xl">
+          <div className="h-16 w-16 rounded-3xl bg-[#08D9D6]/15 border border-[#08D9D6]/30 text-[#08D9D6] flex items-center justify-center mx-auto mb-4">
             <Compass className="h-8 w-8 animate-spin-slow" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">No AI Itinerary Generated Yet</h2>
           <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-6">
-            We have your trip parameters saved for <strong className="text-white">{trip?.destination}</strong> with budget of <strong className="text-emerald-400">₹{parseFloat(trip?.budget || 0).toLocaleString("en-IN")}</strong>. Ready to craft your day-by-day roadmap?
+            We have your trip parameters saved for <strong className="text-white">{trip?.destination}</strong> with budget of <strong className="text-[#08D9D6]">₹{parseFloat(trip?.budget || 0).toLocaleString("en-IN")}</strong>. Ready to craft your day-by-day roadmap?
           </p>
 
           {error && (
@@ -159,14 +158,14 @@ const Itinerary = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-3">
             <button
               onClick={generateItinerary}
-              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:scale-105 transition cursor-pointer flex items-center justify-center gap-2"
+              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#FF2E63] via-[#ff4777] to-[#FF2E63] text-white text-xs font-bold shadow-lg shadow-[#FF2E63]/30 hover:shadow-[#FF2E63]/50 hover:scale-105 transition cursor-pointer flex items-center justify-center gap-2"
             >
               <Sparkles className="h-4 w-4" />
               <span>Generate AI Itinerary</span>
             </button>
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300"
+              className="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 cursor-pointer"
             >
               Back to Dashboard
             </button>
@@ -193,7 +192,7 @@ const Itinerary = () => {
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 print:hidden">
         <button
           onClick={() => navigate("/dashboard")}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-[#08D9D6] transition cursor-pointer"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Dashboard</span>
@@ -202,17 +201,17 @@ const Itinerary = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={generateItinerary}
-            className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition cursor-pointer"
+            className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-[#08D9D6]/10 text-xs font-semibold text-slate-300 hover:text-[#08D9D6] flex items-center gap-1.5 transition cursor-pointer"
           >
-            <RotateCw className="h-3.5 w-3.5 text-violet-400" />
+            <RotateCw className="h-3.5 w-3.5 text-[#08D9D6]" />
             <span>Regenerate</span>
           </button>
 
           <button
             onClick={handlePrint}
-            className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition cursor-pointer"
+            className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-[#08D9D6]/10 text-xs font-semibold text-slate-300 hover:text-[#08D9D6] flex items-center gap-1.5 transition cursor-pointer"
           >
-            <Printer className="h-3.5 w-3.5 text-cyan-400" />
+            <Printer className="h-3.5 w-3.5 text-[#08D9D6]" />
             <span>Print Dossier</span>
           </button>
         </div>
@@ -226,18 +225,18 @@ const Itinerary = () => {
       )}
 
       {/* Hero Trip Banner */}
-      <div className="relative rounded-3xl border border-white/15 bg-gradient-to-r from-violet-950/90 via-slate-900 to-slate-950 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl overflow-hidden mb-8">
-        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-violet-600/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+      <div className="relative rounded-3xl border border-white/15 bg-gradient-to-r from-[#252A34] via-[#1f232b] to-[#181b22] p-6 sm:p-10 shadow-2xl backdrop-blur-2xl overflow-hidden mb-8">
+        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#08D9D6]/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#FF2E63]/15 blur-3xl" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/30 uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#08D9D6]/15 text-[#08D9D6] border border-[#08D9D6]/30 uppercase tracking-wider">
                 {trip.travel_style || "Curated"}
               </span>
               <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-cyan-400" />
+                <Calendar className="h-3.5 w-3.5 text-[#08D9D6]" />
                 <span>{new Date(trip.start_date).toLocaleDateString()} to {new Date(trip.end_date).toLocaleDateString()}</span>
               </span>
             </div>
@@ -253,9 +252,9 @@ const Itinerary = () => {
             )}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-5 text-left md:text-right min-w-[200px]">
+          <div className="rounded-2xl border border-white/10 bg-[#181b22]/70 p-5 text-left md:text-right min-w-[200px]">
             <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Maximum Budget</span>
-            <span className="text-2xl sm:text-3xl font-black text-emerald-400 block mt-0.5">
+            <span className="text-2xl sm:text-3xl font-black text-[#08D9D6] block mt-0.5">
               ₹{totalBudgetVal.toLocaleString("en-IN")}
             </span>
           </div>
@@ -264,12 +263,12 @@ const Itinerary = () => {
 
       {/* View Mode Switcher */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <div className="inline-flex rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl">
+        <div className="inline-flex rounded-2xl border border-white/10 bg-[#252A34]/80 p-1.5 backdrop-blur-xl">
           <button
             onClick={() => setActiveViewMode("split")}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
               activeViewMode === "split"
-                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                ? "bg-[#FF2E63] text-white shadow-md shadow-[#FF2E63]/30"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -281,7 +280,7 @@ const Itinerary = () => {
             onClick={() => setActiveViewMode("timeline")}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
               activeViewMode === "timeline"
-                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                ? "bg-[#FF2E63] text-white shadow-md shadow-[#FF2E63]/30"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -293,7 +292,7 @@ const Itinerary = () => {
             onClick={() => setActiveViewMode("map")}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
               activeViewMode === "map"
-                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                ? "bg-[#FF2E63] text-white shadow-md shadow-[#FF2E63]/30"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -314,14 +313,13 @@ const Itinerary = () => {
       {activeViewMode !== "map" && (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        
         {/* Left Column (8 cols): Overview & Daily Timeline */}
         <div className="lg:col-span-8 space-y-6">
           
           {/* Trip Overview Card */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-xl shadow-lg">
+          <div className="rounded-3xl border border-white/10 bg-[#252A34]/70 p-6 backdrop-blur-xl shadow-lg">
             <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
-              <Compass className="h-4 w-4 text-violet-400" />
+              <Compass className="h-4 w-4 text-[#08D9D6]" />
               <span>Trip Overview & Atmosphere</span>
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -333,7 +331,7 @@ const Itinerary = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-cyan-400" />
+                <Calendar className="h-5 w-5 text-[#08D9D6]" />
                 <span>Day-by-Day Schedule Roadmap</span>
               </h3>
               <span className="text-xs text-slate-400 font-medium">
@@ -347,18 +345,18 @@ const Itinerary = () => {
                 return (
                   <div
                     key={day.day}
-                    className="rounded-3xl border border-white/10 bg-slate-900/60 overflow-hidden backdrop-blur-xl transition-all"
+                    className="rounded-3xl border border-white/10 bg-[#252A34]/70 overflow-hidden backdrop-blur-xl transition-all"
                   >
                     <button
                       onClick={() => setExpandedDay(isExpanded ? null : day.day)}
                       className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-white/5 transition cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-2xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-xs font-bold text-violet-300">
+                        <div className="h-9 w-9 rounded-2xl bg-[#08D9D6]/15 border border-[#08D9D6]/30 flex items-center justify-center text-xs font-bold text-[#08D9D6]">
                           D{day.day}
                         </div>
                         <div>
-                          <span className="text-[11px] font-semibold text-violet-400 uppercase tracking-wider">Day {day.day}</span>
+                          <span className="text-[11px] font-semibold text-[#08D9D6] uppercase tracking-wider">Day {day.day}</span>
                           <h4 className="text-sm sm:text-base font-bold text-white">{day.title}</h4>
                         </div>
                       </div>
@@ -373,7 +371,7 @@ const Itinerary = () => {
                       <div className="px-6 pb-6 pt-2 border-t border-white/5 space-y-3 animate-in fade-in duration-200">
                         {day.activities?.map((activity, aIdx) => (
                           <div key={aIdx} className="flex items-start gap-3 text-xs sm:text-sm text-slate-300">
-                            <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0 mt-0.5" />
+                            <CheckCircle2 className="h-4 w-4 text-[#08D9D6] shrink-0 mt-0.5" />
                             <span className="leading-relaxed">{activity}</span>
                           </div>
                         ))}
@@ -387,15 +385,15 @@ const Itinerary = () => {
 
           {/* Local Travel Tips Alert */}
           {itinerary.travel_tips && itinerary.travel_tips.length > 0 && (
-            <div className="rounded-3xl border border-cyan-500/20 bg-cyan-500/5 p-6 backdrop-blur-xl">
-              <h4 className="text-xs font-bold text-cyan-300 flex items-center gap-2 uppercase tracking-wider mb-3">
-                <Info className="h-4 w-4 text-cyan-400" />
+            <div className="rounded-3xl border border-[#08D9D6]/20 bg-[#08D9D6]/5 p-6 backdrop-blur-xl">
+              <h4 className="text-xs font-bold text-[#08D9D6] flex items-center gap-2 uppercase tracking-wider mb-3">
+                <Info className="h-4 w-4 text-[#08D9D6]" />
                 <span>Local Travel Tips & Practical Advice</span>
               </h4>
               <div className="space-y-2">
                 {itinerary.travel_tips.map((tip, tIdx) => (
                   <p key={tIdx} className="text-xs text-slate-300 leading-relaxed flex items-start gap-2">
-                    <span className="text-cyan-400 font-bold">•</span>
+                    <span className="text-[#08D9D6] font-bold">•</span>
                     <span>{tip}</span>
                   </p>
                 ))}
@@ -409,19 +407,19 @@ const Itinerary = () => {
         <div className="lg:col-span-4 space-y-6">
           
           {/* Budget Breakdown */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-xl shadow-lg space-y-4">
+          <div className="rounded-3xl border border-white/10 bg-[#252A34]/70 p-6 backdrop-blur-xl shadow-lg space-y-4">
             <h4 className="text-sm font-bold text-white flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-emerald-400" />
+              <Wallet className="h-4 w-4 text-[#08D9D6]" />
               <span>Projected Budget Allocation</span>
             </h4>
 
             <div className="space-y-3">
               {[
-                { label: "Accommodation", value: hotelCost, color: "bg-violet-500" },
-                { label: "Food & Dining", value: foodCost, color: "bg-cyan-400" },
+                { label: "Accommodation", value: hotelCost, color: "bg-[#08D9D6]" },
+                { label: "Food & Dining", value: foodCost, color: "bg-[#FF2E63]" },
                 { label: "Transportation", value: transportCost, color: "bg-amber-400" },
                 { label: "Activities & Entry", value: activitiesCost, color: "bg-emerald-400" },
-                { label: "Miscellaneous", value: miscCost, color: "bg-pink-400" },
+                { label: "Miscellaneous", value: miscCost, color: "bg-[#08D9D6]/70" },
               ].map((item) => {
                 const percentage = totalCalculated > 0 ? (item.value / totalCalculated) * 100 : 0;
                 return (
@@ -440,7 +438,7 @@ const Itinerary = () => {
 
             <div className="pt-3 border-t border-white/10 flex justify-between items-center text-xs">
               <span className="text-slate-400 font-semibold">Total Estimated Cost:</span>
-              <span className={`font-bold text-sm ${totalCalculated > totalBudgetVal ? "text-amber-400" : "text-emerald-400"}`}>
+              <span className={`font-bold text-sm ${totalCalculated > totalBudgetVal ? "text-amber-400" : "text-[#08D9D6]"}`}>
                 ₹{totalCalculated.toLocaleString("en-IN")}
               </span>
             </div>
@@ -453,16 +451,16 @@ const Itinerary = () => {
           </div>
 
           {/* Stays & Dining */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-xl shadow-lg space-y-5">
+          <div className="rounded-3xl border border-white/10 bg-[#252A34]/70 p-6 backdrop-blur-xl shadow-lg space-y-5">
             <div>
-              <h5 className="text-xs font-bold text-violet-400 flex items-center gap-1.5 uppercase tracking-wider mb-3">
+              <h5 className="text-xs font-bold text-[#08D9D6] flex items-center gap-1.5 uppercase tracking-wider mb-3">
                 <Hotel className="h-4 w-4" />
                 <span>Recommended Accommodations</span>
               </h5>
               <div className="space-y-2">
                 {itinerary.recommended_hotels?.map((hotel, idx) => (
                   <div key={idx} className="text-xs text-slate-300 flex items-start gap-2 bg-white/5 p-2.5 rounded-2xl">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-violet-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#08D9D6] shrink-0 mt-0.5" />
                     <span className="font-medium">{hotel}</span>
                   </div>
                 ))}
@@ -470,14 +468,14 @@ const Itinerary = () => {
             </div>
 
             <div className="pt-3 border-t border-white/10">
-              <h5 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 uppercase tracking-wider mb-3">
+              <h5 className="text-xs font-bold text-[#FF2E63] flex items-center gap-1.5 uppercase tracking-wider mb-3">
                 <Utensils className="h-4 w-4" />
                 <span>Recommended Gastronomy</span>
               </h5>
               <div className="space-y-2">
                 {itinerary.recommended_restaurants?.map((rest, idx) => (
                   <div key={idx} className="text-xs text-slate-300 flex items-start gap-2 bg-white/5 p-2.5 rounded-2xl">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#FF2E63] shrink-0 mt-0.5" />
                     <span className="font-medium">{rest}</span>
                   </div>
                 ))}
@@ -486,8 +484,8 @@ const Itinerary = () => {
           </div>
 
           {/* Packing Checklist */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-xl shadow-lg space-y-3">
-            <h5 className="text-xs font-bold text-pink-400 flex items-center gap-1.5 uppercase tracking-wider">
+          <div className="rounded-3xl border border-white/10 bg-[#252A34]/70 p-6 backdrop-blur-xl shadow-lg space-y-3">
+            <h5 className="text-xs font-bold text-[#08D9D6] flex items-center gap-1.5 uppercase tracking-wider">
               <CheckSquare className="h-4 w-4" />
               <span>Packing Checklist ({Object.values(checkedItems).filter(Boolean).length}/{itinerary.packing_list?.length || 0})</span>
             </h5>
@@ -523,4 +521,4 @@ const Itinerary = () => {
   );
 };
 
-export default Itinerary;
+export default Itinerary;

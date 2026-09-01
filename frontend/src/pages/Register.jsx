@@ -46,16 +46,16 @@ const Register = () => {
   return (
     <div className="min-h-screen pt-28 pb-16 px-4 flex items-center justify-center relative overflow-hidden">
       {/* Background Ambience */}
-      <div className="pointer-events-none absolute top-1/4 -right-32 w-80 h-80 bg-violet-600/20 rounded-full blur-[120px] -z-10" />
-      <div className="pointer-events-none absolute bottom-1/4 -left-32 w-80 h-80 bg-cyan-500/20 rounded-full blur-[120px] -z-10" />
+      <div className="pointer-events-none absolute top-1/4 -right-32 w-80 h-80 bg-[#08D9D6]/15 rounded-full blur-[120px] -z-10" />
+      <div className="pointer-events-none absolute bottom-1/4 -left-32 w-80 h-80 bg-[#FF2E63]/15 rounded-full blur-[120px] -z-10" />
 
-      <div className="relative w-full max-w-md rounded-3xl border border-white/15 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-2xl">
+      <div className="relative w-full max-w-md rounded-3xl border border-white/15 bg-[#252A34]/90 p-8 shadow-2xl backdrop-blur-2xl">
         
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-violet-600 to-cyan-400 p-0.5 shadow-lg shadow-violet-500/25 mb-3">
-            <div className="h-full w-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <Compass className="h-7 w-7 text-violet-400" />
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-[#08D9D6] to-[#FF2E63] p-0.5 shadow-lg shadow-[#08D9D6]/25 mb-3">
+            <div className="h-full w-full bg-[#181b22] rounded-[14px] flex items-center justify-center">
+              <Compass className="h-7 w-7 text-[#08D9D6]" />
             </div>
           </div>
           <h2 className="text-2xl font-extrabold text-white tracking-tight">
@@ -86,7 +86,7 @@ const Register = () => {
                 placeholder="traveler_alex"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ const Register = () => {
                 placeholder="alex@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
             </div>
           </div>
@@ -120,12 +120,12 @@ const Register = () => {
                 placeholder="At least 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-800/60 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:bg-slate-800"
+                className="w-full rounded-2xl border border-white/10 bg-[#181b22]/70 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 outline-none transition focus:border-[#08D9D6] focus:bg-[#181b22]"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -135,13 +135,13 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white font-bold text-xs shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF2E63] to-[#ff5782] text-white font-bold text-xs shadow-lg shadow-[#FF2E63]/30 hover:shadow-[#FF2E63]/50 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {loading ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
             ) : (
               <>
-                <span>Create Account</span>
+                <span>Create Account & Start</span>
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
@@ -150,7 +150,7 @@ const Register = () => {
 
         <div className="mt-6 text-center text-xs text-slate-400">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-violet-400 hover:text-violet-300 hover:underline">
+          <Link to="/login" className="font-semibold text-[#08D9D6] hover:underline">
             Sign In
           </Link>
         </div>
